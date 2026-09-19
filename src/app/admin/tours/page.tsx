@@ -54,6 +54,12 @@ export default async function AdminToursPage() {
                 <td className="py-2">
                   <div className="flex items-center gap-4">
                     <Link
+                      href={`/admin/tours/${tourPackage.id}/itinerary`}
+                      className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                    >
+                      Itinerary
+                    </Link>
+                    <Link
                       href={`/admin/tours/${tourPackage.id}/edit`}
                       className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
                     >
