@@ -18,6 +18,33 @@ export async function getPackage(id: string) {
   return db.tourPackage.findUnique({ where: { id } });
 }
 
+export async function listPublishedPackages() {
+  return db.tourPackage.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+    include: { destination: true },
+  });
+}
+
+export async function getPackageBySlug(slug: string) {
+  return db.tourPackage.findFirst({
+    where: { slug, published: true },
+    include: {
+      destination: true,
+      days: {
+        orderBy: { dayNumber: "asc" },
+        include: {
+          hotel: true,
+          places: {
+            orderBy: { order: "asc" },
+            include: { place: true },
+          },
+        },
+      },
+    },
+  });
+}
+
 function parseList(raw: string): string[] {
   return raw
     .split("\n")
