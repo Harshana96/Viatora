@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { PlaceForm } from "@/components/admin/PlaceForm";
-import { getPlace, listDestinationOptions, updatePlace } from "@/server/places/actions";
+import { listDestinationOptions } from "@/server/destinations/actions";
+import { getPlace, updatePlace } from "@/server/places/actions";
 
 export const dynamic = "force-dynamic";
 
