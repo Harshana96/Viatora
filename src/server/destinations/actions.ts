@@ -15,6 +15,13 @@ export async function getDestination(id: string) {
   return db.destination.findUnique({ where: { id } });
 }
 
+export async function listDestinationOptions() {
+  return db.destination.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
+}
+
 function parseThingsToDo(raw: string): string[] {
   return raw
     .split("\n")

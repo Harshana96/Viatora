@@ -18,13 +18,6 @@ export async function getPlace(id: string) {
   return db.place.findUnique({ where: { id } });
 }
 
-export async function listDestinationOptions() {
-  return db.destination.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
-}
-
 function parsePlaceForm(formData: FormData) {
   const name = String(formData.get("name") ?? "");
   const slug = String(formData.get("slug") ?? "").trim();

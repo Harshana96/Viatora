@@ -1,5 +1,6 @@
 import { PlaceForm } from "@/components/admin/PlaceForm";
-import { createPlace, listDestinationOptions } from "@/server/places/actions";
+import { listDestinationOptions } from "@/server/destinations/actions";
+import { createPlace } from "@/server/places/actions";
 
 export const dynamic = "force-dynamic";
 
