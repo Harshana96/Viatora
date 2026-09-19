@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlaceCategory {
+  TEMPLE
+  WATERFALL
+  BEACH
+  WILDLIFE
+  MOUNTAIN
+  HISTORICAL_SITE
+  TEA_PLANTATION
+  ADVENTURE
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Destination {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String
+  location    String
+  thingsToDo  String[]
+  latitude    Float
+  longitude   Float
+  places      Place[]
+  packages    TourPackage[]
+  images      Image[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Place {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  description   String
+  category      PlaceCategory
+  latitude      Float
+  longitude     Float
+  destinationId String
+  destination   Destination    @relation(fields: [destinationId], references: [id])
+  images        Image[]
+  tourDayPlaces TourDayPlace[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model TourPackage {
+  id            String        @id @default(cuid())
+  name          String
+  slug          String        @unique
+  coverImageUrl String?
+  durationDays  Int
+  startingPrice Decimal?
+  description   String
+  highlights    String[]
+  included      String[]
+  excluded      String[]
+  published     Boolean       @default(false)
+  destinationId String?
+  destination   Destination?  @relation(fields: [destinationId], references: [id])
+  days          TourDay[]
+  images        Image[]
+  enquiries     Enquiry[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model TourDay {
+  id            String         @id @default(cuid())
+  packageId     String
+  package       TourPackage    @relation(fields: [packageId], references: [id])
+  dayNumber     Int
+  title         String?
+  description   String?
+  hotelId       String?
+  hotel         Hotel?         @relation(fields: [hotelId], references: [id])
+  places        TourDayPlace[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([packageId, dayNumber])
+}
+
+model TourDayPlace {
+  id          String   @id @default(cuid())
+  tourDayId   String
+  tourDay     TourDay  @relation(fields: [tourDayId], references: [id])
+  placeId     String
+  place       Place    @relation(fields: [placeId], references: [id])
+  activities  String[]
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@unique([tourDayId, placeId])
+}
+
+model Hotel {
+  id        String    @id @default(cuid())
+  name      String
+  location  String
+  rating    Float?
+  tourDays  TourDay[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Image {
+  id            String       @id @default(cuid())
+  url           String
+  alt           String?
+  destinationId String?
+  destination   Destination? @relation(fields: [destinationId], references: [id])
+  placeId       String?
+  place         Place?       @relation(fields: [placeId], references: [id])
+  packageId     String?
+  package       TourPackage? @relation(fields: [packageId], references: [id])
+  createdAt     DateTime     @default(now())
+}
+
+model Enquiry {
+  id              String        @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  preferredDate   DateTime?
+  travellersCount Int
+  packageId       String?
+  package         TourPackage?  @relation(fields: [packageId], references: [id])
+  message         String?
+  status          EnquiryStatus @default(NEW)
+  internalNotes   String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
