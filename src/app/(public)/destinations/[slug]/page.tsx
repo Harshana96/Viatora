@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -21,11 +22,39 @@ export default async function DestinationDetailPage({
   return (
     <main className="flex-1 px-6 py-12">
       <div className="mx-auto flex max-w-5xl flex-col gap-10">
+        {destination.images.length > 0 ? (
+          <Image
+            src={destination.images[0].url}
+            alt={destination.images[0].alt ?? destination.name}
+            width={1200}
+            height={480}
+            className="h-64 w-full rounded-lg object-cover sm:h-80"
+            priority
+          />
+        ) : null}
         <header>
           <h1 className="text-3xl font-semibold tracking-tight">{destination.name}</h1>
           <p className="mt-1 text-sm font-medium text-zinc-500">{destination.location}</p>
           <p className="mt-4 max-w-2xl text-zinc-600 dark:text-zinc-400">{destination.description}</p>
         </header>
+
+        {destination.images.length > 1 ? (
+          <section>
+            <h2 className="mb-4 text-lg font-semibold">Gallery</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {destination.images.slice(1).map((image) => (
+                <Image
+                  key={image.id}
+                  src={image.url}
+                  alt={image.alt ?? destination.name}
+                  width={300}
+                  height={200}
+                  className="h-32 w-full rounded-md object-cover"
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {destination.thingsToDo.length > 0 ? (
           <section>

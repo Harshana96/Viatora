@@ -31,10 +31,10 @@ export function PackageForm({ action, tourPackage, destinations }: Props) {
           placeholder="auto-generated from name if left blank"
         />
       </div>
-      <div>
-        <Label htmlFor="coverImageUrl">Cover image URL</Label>
-        <Input id="coverImageUrl" name="coverImageUrl" defaultValue={tourPackage?.coverImageUrl ?? ""} />
-      </div>
+      {/* Cover image is managed via the dedicated upload form on the edit
+          page, not this field — carry the existing value through so saving
+          other fields doesn't wipe it out. */}
+      <input type="hidden" name="coverImageUrl" defaultValue={tourPackage?.coverImageUrl ?? ""} />
       <div>
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" defaultValue={tourPackage?.description} required rows={4} />

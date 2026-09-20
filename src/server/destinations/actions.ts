@@ -12,7 +12,10 @@ export async function listDestinations() {
 }
 
 export async function getDestination(id: string) {
-  return db.destination.findUnique({ where: { id } });
+  return db.destination.findUnique({
+    where: { id },
+    include: { images: { orderBy: { createdAt: "asc" } } },
+  });
 }
 
 export async function getDestinationBySlug(slug: string) {
@@ -20,6 +23,7 @@ export async function getDestinationBySlug(slug: string) {
     where: { slug },
     include: {
       places: { orderBy: { name: "asc" } },
+      images: { orderBy: { createdAt: "asc" } },
       packages: { where: { published: true }, orderBy: { createdAt: "desc" } },
     },
   });

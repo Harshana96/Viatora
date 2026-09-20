@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -42,6 +43,16 @@ export default async function TourPackagePage({
   return (
     <main className="flex-1 px-6 py-12">
       <div className="mx-auto flex max-w-5xl flex-col gap-10">
+        {tourPackage.coverImageUrl ? (
+          <Image
+            src={tourPackage.coverImageUrl}
+            alt={tourPackage.name}
+            width={1200}
+            height={480}
+            className="h-64 w-full rounded-lg object-cover sm:h-80"
+            priority
+          />
+        ) : null}
         <header>
           <p className="text-sm font-medium text-zinc-500">
             {tourPackage.durationDays} days
@@ -71,6 +82,24 @@ export default async function TourPackagePage({
           <h2 className="mb-4 text-lg font-semibold">Journey</h2>
           <JourneyExplorer days={journeyDays} route={route} />
         </section>
+
+        {tourPackage.images.length > 0 ? (
+          <section>
+            <h2 className="mb-4 text-lg font-semibold">Gallery</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {tourPackage.images.map((image) => (
+                <Image
+                  key={image.id}
+                  src={image.url}
+                  alt={image.alt ?? tourPackage.name}
+                  width={300}
+                  height={200}
+                  className="h-32 w-full rounded-md object-cover"
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {tourPackage.included.length > 0 || tourPackage.excluded.length > 0 ? (
           <section className="grid gap-6 sm:grid-cols-2">

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { deleteImageFromCloudinary, uploadImageToCloudinary } from "@/lib/cloudinary";
 import { db } from "@/lib/db";
 import { slugify } from "@/lib/utils/slug";
 import { tourPackageSchema } from "@/lib/validation/tour-package";
@@ -15,7 +16,10 @@ export async function listPackages() {
 }
 
 export async function getPackage(id: string) {
-  return db.tourPackage.findUnique({ where: { id } });
+  return db.tourPackage.findUnique({
+    where: { id },
+    include: { images: { orderBy: { createdAt: "asc" } } },
+  });
 }
 
 export async function listPublishedPackages() {
@@ -31,6 +35,7 @@ export async function getPackageBySlug(slug: string) {
     where: { slug, published: true },
     include: {
       destination: true,
+      images: { orderBy: { createdAt: "asc" } },
       days: {
         orderBy: { dayNumber: "asc" },
         include: {
@@ -98,6 +103,34 @@ export async function updatePackage(formData: FormData) {
 export async function deletePackage(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   await db.tourPackage.delete({ where: { id } });
+  revalidatePath("/admin/tours");
+}
+
+export async function uploadPackageCoverImage(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const file = formData.get("file");
+
+  if (!id || !(file instanceof File) || file.size === 0) {
+    return;
+  }
+
+  const existing = await db.tourPackage.findUnique({
+    where: { id },
+    select: { coverImagePublicId: true },
+  });
+
+  const uploaded = await uploadImageToCloudinary(file);
+
+  await db.tourPackage.update({
+    where: { id },
+    data: { coverImageUrl: uploaded.url, coverImagePublicId: uploaded.publicId },
+  });
+
+  if (existing?.coverImagePublicId) {
+    await deleteImageFromCloudinary(existing.coverImagePublicId);
+  }
+
+  revalidatePath(`/admin/tours/${id}/edit`);
   revalidatePath("/admin/tours");
 }
 
