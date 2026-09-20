@@ -10,7 +10,17 @@ npm run dev
 
 - Lint: `npm run lint`
 - Type check: `npx tsc --noEmit`
-- Tests: `npm run test` (unit), `npm run test:e2e` (Playwright)
+- Unit tests: `npm run test` (Vitest, `tests/unit/`) — pure logic only
+  (Zod validation schemas, `slugify`, haversine distance). No DB, no
+  server, runs in milliseconds.
+- E2E tests: `npm run test:e2e` (Playwright, `tests/e2e/`) — drives a real
+  Chromium browser against the app (starts `npm run dev` itself if nothing
+  is already listening on port 3000, per `playwright.config.ts`). Covers
+  public pages, search/filters, the enquiry form, and the full admin
+  login/logout flow. `tests/e2e/global-setup.ts` seeds its own admin user
+  and a published destination/package before the run and
+  `global-teardown.ts` deletes them after — the suite is hermetic and
+  doesn't depend on or pollute whatever else is in your database.
 - Create/reset an admin login: `npm run create-admin -- <email> <password> [name]`
   (upserts a `User` row with a bcrypt-hashed password — there is no public
   admin signup flow by design)
