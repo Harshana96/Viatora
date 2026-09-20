@@ -19,6 +19,9 @@ type Props = {
   days: JourneyDay[];
   selectedDayId: string | null;
   onSelectDay: (dayId: string) => void;
+  /** Road-following route coordinates ([lng, lat] pairs) from the Directions
+   * API. Falls back to a straight line between day points when null. */
+  routeGeometry: [number, number][] | null;
 };
 
 function getDayPoint(day: JourneyDay): MapPoint | null {
@@ -35,7 +38,7 @@ function getDayPoint(day: JourneyDay): MapPoint | null {
   };
 }
 
-export function JourneyMap({ days, selectedDayId, onSelectDay }: Props) {
+export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
@@ -65,6 +68,11 @@ export function JourneyMap({ days, selectedDayId, onSelectDay }: Props) {
 
     map.on("load", () => {
       if (points.length > 1) {
+        const isRoadRoute = routeGeometry !== null && routeGeometry.length > 1;
+        const lineCoordinates = isRoadRoute
+          ? routeGeometry
+          : points.map((point): [number, number] => [point.longitude, point.latitude]);
+
         map.addSource("journey-route", {
           type: "geojson",
           data: {
@@ -72,7 +80,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay }: Props) {
             properties: {},
             geometry: {
               type: "LineString",
-              coordinates: points.map((point) => [point.longitude, point.latitude]),
+              coordinates: lineCoordinates,
             },
           },
         });
@@ -81,7 +89,9 @@ export function JourneyMap({ days, selectedDayId, onSelectDay }: Props) {
           type: "line",
           source: "journey-route",
           layout: { "line-join": "round", "line-cap": "round" },
-          paint: { "line-color": "#0f172a", "line-width": 3, "line-dasharray": [0.5, 1.5] },
+          paint: isRoadRoute
+            ? { "line-color": "#0f172a", "line-width": 4 }
+            : { "line-color": "#0f172a", "line-width": 3, "line-dasharray": [0.5, 1.5] },
         });
       }
 
@@ -112,7 +122,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay }: Props) {
       map.remove();
       mapRef.current = null;
     };
-  }, [points, onSelectDay]);
+  }, [points, onSelectDay, routeGeometry]);
 
   useEffect(() => {
     markersRef.current.forEach((marker, dayId) => {

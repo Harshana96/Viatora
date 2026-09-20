@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { JourneyExplorer } from "@/components/itinerary/JourneyExplorer";
+import { fetchDrivingRoute } from "@/lib/mapbox";
 import { formatCurrency } from "@/lib/utils";
 import { getPackageBySlug } from "@/server/tours/actions";
 import type { JourneyDay } from "@/types";
@@ -35,6 +36,9 @@ export default async function TourPackagePage({
     })),
   }));
 
+  const dayPoints = journeyDays.map((day) => day.places[0]).filter((place) => Boolean(place)) as JourneyDay["places"];
+  const route = await fetchDrivingRoute(dayPoints);
+
   return (
     <main className="flex-1 px-6 py-12">
       <div className="mx-auto flex max-w-5xl flex-col gap-10">
@@ -65,7 +69,7 @@ export default async function TourPackagePage({
 
         <section>
           <h2 className="mb-4 text-lg font-semibold">Journey</h2>
-          <JourneyExplorer days={journeyDays} />
+          <JourneyExplorer days={journeyDays} route={route} />
         </section>
 
         {tourPackage.included.length > 0 || tourPackage.excluded.length > 0 ? (
