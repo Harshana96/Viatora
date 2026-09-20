@@ -4,17 +4,28 @@ import { useState } from "react";
 
 import { JourneyMap } from "@/components/map/JourneyMap";
 import { totalRouteDistanceKm } from "@/lib/geo";
+import type { DirectionsRoute } from "@/lib/mapbox";
 import type { JourneyDay } from "@/types";
 
 type Props = {
   days: JourneyDay[];
+  route: DirectionsRoute | null;
 };
 
-export function JourneyExplorer({ days }: Props) {
+function formatDuration(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = Math.round(minutes % 60);
+  if (hours === 0) {
+    return `${remainingMinutes} min`;
+  }
+  return `${hours} h ${remainingMinutes} min`;
+}
+
+export function JourneyExplorer({ days, route }: Props) {
   const [selectedDayId, setSelectedDayId] = useState<string | null>(days[0]?.id ?? null);
 
   const routePoints = days.map((day) => day.places[0]).filter((place) => Boolean(place)) as JourneyDay["places"];
-  const totalDistanceKm = totalRouteDistanceKm(routePoints);
+  const straightLineDistanceKm = totalRouteDistanceKm(routePoints);
 
   return (
     <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
@@ -48,11 +59,20 @@ export function JourneyExplorer({ days }: Props) {
       </div>
       <div className="order-1 flex flex-col gap-2 lg:order-2 lg:sticky lg:top-6">
         <div className="h-[320px] overflow-hidden rounded-lg lg:h-[480px]">
-          <JourneyMap days={days} selectedDayId={selectedDayId} onSelectDay={setSelectedDayId} />
+          <JourneyMap
+            days={days}
+            selectedDayId={selectedDayId}
+            onSelectDay={setSelectedDayId}
+            routeGeometry={route?.coordinates ?? null}
+          />
         </div>
-        {totalDistanceKm > 0 ? (
+        {route ? (
           <p className="text-center text-xs text-zinc-500">
-            Approximate route distance: {Math.round(totalDistanceKm)} km
+            Road route: {Math.round(route.distanceKm)} km · ~{formatDuration(route.durationMinutes)} drive
+          </p>
+        ) : straightLineDistanceKm > 0 ? (
+          <p className="text-center text-xs text-zinc-500">
+            Approximate straight-line distance: {Math.round(straightLineDistanceKm)} km
           </p>
         ) : null}
       </div>
