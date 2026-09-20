@@ -1,5 +1,6 @@
 "use server";
 
+import type { Prisma, TravelType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -22,9 +23,55 @@ export async function getPackage(id: string) {
   });
 }
 
-export async function listPublishedPackages() {
+export type DurationBucket = "short" | "medium" | "long";
+export type BudgetBucket = "low" | "mid" | "high" | "premium";
+
+export type PackageFilters = {
+  query?: string;
+  destinationId?: string;
+  travelType?: TravelType;
+  duration?: DurationBucket;
+  budget?: BudgetBucket;
+};
+
+export async function listPublishedPackages(filters: PackageFilters = {}) {
+  const where: Prisma.TourPackageWhereInput = { published: true };
+
+  if (filters.query) {
+    where.OR = [
+      { name: { contains: filters.query, mode: "insensitive" } },
+      { description: { contains: filters.query, mode: "insensitive" } },
+    ];
+  }
+
+  if (filters.destinationId) {
+    where.destinationId = filters.destinationId;
+  }
+
+  if (filters.travelType) {
+    where.travelType = filters.travelType;
+  }
+
+  if (filters.duration === "short") {
+    where.durationDays = { lte: 3 };
+  } else if (filters.duration === "medium") {
+    where.durationDays = { gte: 4, lte: 7 };
+  } else if (filters.duration === "long") {
+    where.durationDays = { gte: 8 };
+  }
+
+  if (filters.budget === "low") {
+    where.startingPrice = { lt: 500 };
+  } else if (filters.budget === "mid") {
+    where.startingPrice = { gte: 500, lt: 1000 };
+  } else if (filters.budget === "high") {
+    where.startingPrice = { gte: 1000, lt: 2000 };
+  } else if (filters.budget === "premium") {
+    where.startingPrice = { gte: 2000 };
+  }
+
   return db.tourPackage.findMany({
-    where: { published: true },
+    where,
     orderBy: { createdAt: "desc" },
     include: { destination: true },
   });
@@ -63,6 +110,7 @@ function parsePackageForm(formData: FormData) {
   const startingPriceRaw = String(formData.get("startingPrice") ?? "").trim();
   const coverImageUrlRaw = String(formData.get("coverImageUrl") ?? "").trim();
   const destinationIdRaw = String(formData.get("destinationId") ?? "").trim();
+  const travelTypeRaw = String(formData.get("travelType") ?? "").trim();
 
   const parsed = tourPackageSchema.parse({
     name,
@@ -70,6 +118,7 @@ function parsePackageForm(formData: FormData) {
     coverImageUrl: coverImageUrlRaw,
     durationDays: formData.get("durationDays"),
     startingPrice: startingPriceRaw || undefined,
+    travelType: travelTypeRaw,
     description: String(formData.get("description") ?? ""),
     highlights: parseList(String(formData.get("highlights") ?? "")),
     included: parseList(String(formData.get("included") ?? "")),
@@ -82,6 +131,7 @@ function parsePackageForm(formData: FormData) {
     ...parsed,
     coverImageUrl: parsed.coverImageUrl || null,
     destinationId: parsed.destinationId || null,
+    travelType: parsed.travelType || null,
   };
 }
 

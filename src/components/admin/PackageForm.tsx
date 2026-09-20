@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { travelTypeLabels } from "@/lib/travel-type";
 
 type DestinationOption = { id: string; name: string };
 
@@ -70,6 +71,17 @@ export function PackageForm({ action, tourPackage, destinations }: Props) {
           {destinations.map((destination) => (
             <option key={destination.id} value={destination.id}>
               {destination.name}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="travelType">Travel type</Label>
+        <Select id="travelType" name="travelType" defaultValue={tourPackage?.travelType ?? ""}>
+          <option value="">No specific type</option>
+          {Object.entries(travelTypeLabels).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </Select>
