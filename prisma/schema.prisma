@@ -68,51 +68,52 @@ model Place {
 }
 
 model TourPackage {
-  id            String        @id @default(cuid())
-  name          String
-  slug          String        @unique
-  coverImageUrl String?
-  durationDays  Int
-  startingPrice Decimal?
-  description   String
-  highlights    String[]
-  included      String[]
-  excluded      String[]
-  published     Boolean       @default(false)
-  destinationId String?
-  destination   Destination?  @relation(fields: [destinationId], references: [id])
-  days          TourDay[]
-  images        Image[]
-  enquiries     Enquiry[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id                 String       @id @default(cuid())
+  name               String
+  slug               String       @unique
+  coverImageUrl      String?
+  coverImagePublicId String?
+  durationDays       Int
+  startingPrice      Decimal?
+  description        String
+  highlights         String[]
+  included           String[]
+  excluded           String[]
+  published          Boolean      @default(false)
+  destinationId      String?
+  destination        Destination? @relation(fields: [destinationId], references: [id])
+  days               TourDay[]
+  images             Image[]
+  enquiries          Enquiry[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 }
 
 model TourDay {
-  id            String         @id @default(cuid())
-  packageId     String
-  package       TourPackage    @relation(fields: [packageId], references: [id])
-  dayNumber     Int
-  title         String?
-  description   String?
-  hotelId       String?
-  hotel         Hotel?         @relation(fields: [hotelId], references: [id])
-  places        TourDayPlace[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id          String         @id @default(cuid())
+  packageId   String
+  package     TourPackage    @relation(fields: [packageId], references: [id])
+  dayNumber   Int
+  title       String?
+  description String?
+  hotelId     String?
+  hotel       Hotel?         @relation(fields: [hotelId], references: [id])
+  places      TourDayPlace[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   @@unique([packageId, dayNumber])
 }
 
 model TourDayPlace {
-  id          String   @id @default(cuid())
-  tourDayId   String
-  tourDay     TourDay  @relation(fields: [tourDayId], references: [id])
-  placeId     String
-  place       Place    @relation(fields: [placeId], references: [id])
-  activities  String[]
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  tourDayId  String
+  tourDay    TourDay  @relation(fields: [tourDayId], references: [id])
+  placeId    String
+  place      Place    @relation(fields: [placeId], references: [id])
+  activities String[]
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
 
   @@unique([tourDayId, placeId])
 }
@@ -130,6 +131,7 @@ model Hotel {
 model Image {
   id            String       @id @default(cuid())
   url           String
+  publicId      String
   alt           String?
   destinationId String?
   destination   Destination? @relation(fields: [destinationId], references: [id])

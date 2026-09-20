@@ -15,7 +15,10 @@ export async function listPlaces() {
 }
 
 export async function getPlace(id: string) {
-  return db.place.findUnique({ where: { id } });
+  return db.place.findUnique({
+    where: { id },
+    include: { images: { orderBy: { createdAt: "asc" } } },
+  });
 }
 
 function parsePlaceForm(formData: FormData) {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { listPublishedPackages } from "@/server/tours/actions";
@@ -18,13 +19,24 @@ export default async function ToursPage() {
             <li key={tourPackage.id}>
               <Link
                 href={`/tours/${tourPackage.slug}`}
-                className="block rounded-lg border border-zinc-200 p-4 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+                className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
               >
-                <p className="text-sm text-zinc-500">
-                  {tourPackage.durationDays} days
-                  {tourPackage.destination ? ` · ${tourPackage.destination.name}` : ""}
-                </p>
-                <p className="mt-1 text-lg font-semibold">{tourPackage.name}</p>
+                {tourPackage.coverImageUrl ? (
+                  <Image
+                    src={tourPackage.coverImageUrl}
+                    alt={tourPackage.name}
+                    width={400}
+                    height={200}
+                    className="h-36 w-full object-cover"
+                  />
+                ) : null}
+                <div className="p-4">
+                  <p className="text-sm text-zinc-500">
+                    {tourPackage.durationDays} days
+                    {tourPackage.destination ? ` · ${tourPackage.destination.name}` : ""}
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">{tourPackage.name}</p>
+                </div>
               </Link>
             </li>
           ))}
