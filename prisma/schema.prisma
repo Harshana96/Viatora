@@ -26,6 +26,16 @@ enum EnquiryStatus {
   CANCELLED
 }
 
+enum TravelType {
+  ADVENTURE
+  CULTURAL
+  BEACH
+  WILDLIFE
+  HONEYMOON
+  FAMILY
+  WELLNESS
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -75,6 +85,7 @@ model TourPackage {
   coverImagePublicId String?
   durationDays       Int
   startingPrice      Decimal?
+  travelType         TravelType?
   description        String
   highlights         String[]
   included           String[]
