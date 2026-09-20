@@ -15,6 +15,16 @@ export async function getDestination(id: string) {
   return db.destination.findUnique({ where: { id } });
 }
 
+export async function getDestinationBySlug(slug: string) {
+  return db.destination.findUnique({
+    where: { slug },
+    include: {
+      places: { orderBy: { name: "asc" } },
+      packages: { where: { published: true }, orderBy: { createdAt: "desc" } },
+    },
+  });
+}
+
 export async function listDestinationOptions() {
   return db.destination.findMany({
     orderBy: { name: "asc" },
