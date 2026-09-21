@@ -12,14 +12,26 @@ export function DestinationCard({ slug, name, location, imageUrl }: Props) {
   return (
     <Link
       href={`/destinations/${slug}`}
-      className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+      className="group block overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-stone-900"
     >
-      {imageUrl ? (
-        <Image src={imageUrl} alt={name} width={400} height={200} className="h-36 w-full object-cover" />
-      ) : null}
+      <div className="aspect-[4/3] overflow-hidden">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={name}
+            width={400}
+            height={300}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent/20 via-amber-100 to-accent/10 dark:from-accent/15 dark:via-stone-800 dark:to-accent/5">
+            <span className="text-sm font-medium text-accent">{name}</span>
+          </div>
+        )}
+      </div>
       <div className="p-4">
-        <p className="text-sm text-zinc-500">{location}</p>
-        <p className="mt-1 text-lg font-semibold">{name}</p>
+        <p className="text-xs font-medium tracking-wide text-accent uppercase">{location}</p>
+        <p className="mt-1.5 text-lg font-semibold text-stone-900 dark:text-stone-50">{name}</p>
       </div>
     </Link>
   );

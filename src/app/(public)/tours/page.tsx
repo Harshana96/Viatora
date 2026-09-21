@@ -64,9 +64,11 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="flex-1 px-6 py-16">
-      <h1 className="text-2xl font-semibold">Tour Packages</h1>
+      <div className="mx-auto max-w-6xl">
+        <p className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">Explore</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">Tour Packages</h1>
 
-      <form className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <form className="mt-8 grid grid-cols-1 gap-4 rounded-2xl bg-stone-50 p-5 sm:grid-cols-2 lg:grid-cols-5 dark:bg-stone-900/60">
         <div className="lg:col-span-2">
           <Label htmlFor="query">Search</Label>
           <Input id="query" name="query" defaultValue={params.query ?? ""} placeholder="Search packages" />
@@ -118,30 +120,31 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
         <div className="flex items-end gap-4 lg:col-span-5">
           <Button type="submit">Apply filters</Button>
           {hasFilters ? (
-            <Link href="/tours" className="text-sm font-medium text-zinc-500 hover:underline">
+            <Link href="/tours" className="text-sm font-medium text-stone-500 hover:underline">
               Clear filters
             </Link>
           ) : null}
         </div>
       </form>
 
-      {packages.length === 0 ? (
-        <p className="mt-8 text-zinc-600 dark:text-zinc-400">No tour packages match your filters.</p>
-      ) : (
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {packages.map((tourPackage) => (
-            <li key={tourPackage.id}>
-              <PackageCard
-                slug={tourPackage.slug}
-                name={tourPackage.name}
-                durationDays={tourPackage.durationDays}
-                destinationName={tourPackage.destination?.name}
-                coverImageUrl={tourPackage.coverImageUrl}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+        {packages.length === 0 ? (
+          <p className="mt-8 text-stone-600 dark:text-stone-400">No tour packages match your filters.</p>
+        ) : (
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {packages.map((tourPackage) => (
+              <li key={tourPackage.id}>
+                <PackageCard
+                  slug={tourPackage.slug}
+                  name={tourPackage.name}
+                  durationDays={tourPackage.durationDays}
+                  destinationName={tourPackage.destination?.name}
+                  coverImageUrl={tourPackage.coverImageUrl}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </main>
   );
 }

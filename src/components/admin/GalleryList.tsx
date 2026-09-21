@@ -17,7 +17,7 @@ type Props = {
 
 export function GalleryList({ images, ownerType, ownerId }: Props) {
   if (images.length === 0) {
-    return <p className="text-sm text-zinc-500">No images yet.</p>;
+    return <p className="text-sm text-stone-500">No images yet.</p>;
   }
 
   return (
@@ -25,7 +25,7 @@ export function GalleryList({ images, ownerType, ownerId }: Props) {
       {images.map((image) => (
         <li
           key={image.id}
-          className="relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800"
+          className="relative overflow-hidden rounded-md border border-stone-200 dark:border-stone-800"
         >
           <Image
             src={image.url}

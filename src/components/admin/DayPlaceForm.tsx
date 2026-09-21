@@ -16,7 +16,7 @@ export function DayPlaceForm({ action, packageId, tourDayId, places }: Props) {
   return (
     <form
       action={action}
-      className="flex flex-col gap-2 rounded-md border border-dashed border-zinc-300 p-3 dark:border-zinc-700"
+      className="flex flex-col gap-2 rounded-md border border-dashed border-stone-300 p-3 dark:border-stone-700"
     >
       <input type="hidden" name="packageId" defaultValue={packageId} />
       <input type="hidden" name="tourDayId" defaultValue={tourDayId} />
