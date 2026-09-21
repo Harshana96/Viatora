@@ -27,7 +27,7 @@ export default async function ItineraryBuilderPage({
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Itinerary: {tourPackage.name}</h1>
-          <p className="text-sm text-zinc-500">{tourPackage.durationDays} day package</p>
+          <p className="text-sm text-stone-500">{tourPackage.durationDays} day package</p>
         </div>
         <Link href={`/admin/tours/${id}/itinerary/days/new`}>
           <Button>Add day</Button>
@@ -35,11 +35,11 @@ export default async function ItineraryBuilderPage({
       </div>
 
       {days.length === 0 ? (
-        <p className="text-zinc-600 dark:text-zinc-400">No days added yet.</p>
+        <p className="text-stone-600 dark:text-stone-400">No days added yet.</p>
       ) : (
         <div className="flex flex-col gap-6">
           {days.map((day) => (
-            <section key={day.id} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+            <section key={day.id} className="rounded-lg border border-stone-200 p-4 dark:border-stone-800">
               <div className="mb-3 flex items-start justify-between">
                 <div>
                   <h2 className="text-lg font-semibold">
@@ -47,14 +47,14 @@ export default async function ItineraryBuilderPage({
                     {day.title ? ` — ${day.title}` : ""}
                   </h2>
                   {day.description ? (
-                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{day.description}</p>
+                    <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{day.description}</p>
                   ) : null}
-                  {day.hotel ? <p className="mt-1 text-sm text-zinc-500">Hotel: {day.hotel.name}</p> : null}
+                  {day.hotel ? <p className="mt-1 text-sm text-stone-500">Hotel: {day.hotel.name}</p> : null}
                 </div>
                 <div className="flex items-center gap-4">
                   <Link
                     href={`/admin/tours/${id}/itinerary/days/${day.id}/edit`}
-                    className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                    className="text-sm font-medium text-stone-900 hover:underline dark:text-stone-50"
                   >
                     Edit
                   </Link>
@@ -72,12 +72,12 @@ export default async function ItineraryBuilderPage({
                   {day.places.map((dayPlace) => (
                     <li
                       key={dayPlace.id}
-                      className="flex items-start justify-between gap-4 rounded-md bg-zinc-50 p-2 text-sm dark:bg-zinc-900"
+                      className="flex items-start justify-between gap-4 rounded-md bg-stone-50 p-2 text-sm dark:bg-stone-900"
                     >
                       <div>
                         <p className="font-medium">{dayPlace.place.name}</p>
                         {dayPlace.activities.length > 0 ? (
-                          <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
+                          <ul className="list-disc pl-5 text-stone-600 dark:text-stone-400">
                             {dayPlace.activities.map((activity, index) => (
                               <li key={index}>{activity}</li>
                             ))}

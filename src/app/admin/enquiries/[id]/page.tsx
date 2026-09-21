@@ -27,21 +27,21 @@ export default async function AdminEnquiryDetailPage({
       <h1 className="mb-6 text-2xl font-semibold">Enquiry from {enquiry.name}</h1>
 
       <dl className="mb-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-3 text-sm">
-        <dt className="text-zinc-500">Email</dt>
+        <dt className="text-stone-500">Email</dt>
         <dd>{enquiry.email}</dd>
-        <dt className="text-zinc-500">WhatsApp / phone</dt>
+        <dt className="text-stone-500">WhatsApp / phone</dt>
         <dd>{enquiry.phone}</dd>
-        <dt className="text-zinc-500">Package</dt>
+        <dt className="text-stone-500">Package</dt>
         <dd>{enquiry.package?.name ?? "General enquiry"}</dd>
-        <dt className="text-zinc-500">Preferred travel date</dt>
+        <dt className="text-stone-500">Preferred travel date</dt>
         <dd>{enquiry.preferredDate ? enquiry.preferredDate.toLocaleDateString() : "—"}</dd>
-        <dt className="text-zinc-500">Number of travellers</dt>
+        <dt className="text-stone-500">Number of travellers</dt>
         <dd>{enquiry.travellersCount}</dd>
-        <dt className="text-zinc-500">Received</dt>
+        <dt className="text-stone-500">Received</dt>
         <dd>{enquiry.createdAt.toLocaleString()}</dd>
         {enquiry.message ? (
           <>
-            <dt className="text-zinc-500">Message</dt>
+            <dt className="text-stone-500">Message</dt>
             <dd className="whitespace-pre-wrap">{enquiry.message}</dd>
           </>
         ) : null}

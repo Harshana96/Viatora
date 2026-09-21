@@ -40,19 +40,19 @@ export function JourneyExplorer({ days, route }: Props) {
               className={
                 "w-full rounded-lg border p-4 text-left transition-colors " +
                 (isActive
-                  ? "border-zinc-900 bg-zinc-50 dark:border-zinc-50 dark:bg-zinc-900"
-                  : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600")
+                  ? "border-stone-900 bg-stone-50 dark:border-stone-50 dark:bg-stone-900"
+                  : "border-stone-200 hover:border-stone-400 dark:border-stone-800 dark:hover:border-stone-600")
               }
             >
-              <p className="text-sm font-semibold text-zinc-500">Day {day.dayNumber}</p>
+              <p className="text-sm font-semibold text-stone-500">Day {day.dayNumber}</p>
               {day.title ? <p className="text-lg font-semibold">{day.title}</p> : null}
               {day.description ? (
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{day.description}</p>
+                <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{day.description}</p>
               ) : null}
               {day.places.length > 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">{day.places.map((place) => place.name).join(", ")}</p>
+                <p className="mt-2 text-sm text-stone-500">{day.places.map((place) => place.name).join(", ")}</p>
               ) : null}
-              {day.hotelName ? <p className="mt-1 text-xs text-zinc-400">Stay: {day.hotelName}</p> : null}
+              {day.hotelName ? <p className="mt-1 text-xs text-stone-400">Stay: {day.hotelName}</p> : null}
             </button>
           );
         })}
@@ -67,11 +67,11 @@ export function JourneyExplorer({ days, route }: Props) {
           />
         </div>
         {route ? (
-          <p className="text-center text-xs text-zinc-500">
+          <p className="text-center text-xs text-stone-500">
             Road route: {Math.round(route.distanceKm)} km · ~{formatDuration(route.durationMinutes)} drive
           </p>
         ) : straightLineDistanceKm > 0 ? (
-          <p className="text-center text-xs text-zinc-500">
+          <p className="text-center text-xs text-stone-500">
             Approximate straight-line distance: {Math.round(straightLineDistanceKm)} km
           </p>
         ) : null}

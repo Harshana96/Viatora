@@ -18,11 +18,11 @@ export default async function AdminPlacesPage() {
         </Link>
       </div>
       {places.length === 0 ? (
-        <p className="text-zinc-600 dark:text-zinc-400">No places yet.</p>
+        <p className="text-stone-600 dark:text-stone-400">No places yet.</p>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
+            <tr className="border-b border-stone-200 dark:border-stone-800">
               <th className="py-2">Name</th>
               <th className="py-2">Category</th>
               <th className="py-2">Destination</th>
@@ -31,15 +31,15 @@ export default async function AdminPlacesPage() {
           </thead>
           <tbody>
             {places.map((place) => (
-              <tr key={place.id} className="border-b border-zinc-100 dark:border-zinc-900">
+              <tr key={place.id} className="border-b border-stone-100 dark:border-stone-900">
                 <td className="py-2">{place.name}</td>
-                <td className="py-2 text-zinc-500">{place.category}</td>
+                <td className="py-2 text-stone-500">{place.category}</td>
                 <td className="py-2">{place.destination.name}</td>
                 <td className="py-2">
                   <div className="flex items-center gap-4">
                     <Link
                       href={`/admin/places/${place.id}/edit`}
-                      className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                      className="text-sm font-medium text-stone-900 hover:underline dark:text-stone-50"
                     >
                       Edit
                     </Link>

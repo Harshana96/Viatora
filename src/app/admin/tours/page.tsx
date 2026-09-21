@@ -18,11 +18,11 @@ export default async function AdminToursPage() {
         </Link>
       </div>
       {packages.length === 0 ? (
-        <p className="text-zinc-600 dark:text-zinc-400">No tour packages yet.</p>
+        <p className="text-stone-600 dark:text-stone-400">No tour packages yet.</p>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
+            <tr className="border-b border-stone-200 dark:border-stone-800">
               <th className="py-2">Name</th>
               <th className="py-2">Duration</th>
               <th className="py-2">Destination</th>
@@ -32,7 +32,7 @@ export default async function AdminToursPage() {
           </thead>
           <tbody>
             {packages.map((tourPackage) => (
-              <tr key={tourPackage.id} className="border-b border-zinc-100 dark:border-zinc-900">
+              <tr key={tourPackage.id} className="border-b border-stone-100 dark:border-stone-900">
                 <td className="py-2">{tourPackage.name}</td>
                 <td className="py-2">{tourPackage.durationDays} days</td>
                 <td className="py-2">{tourPackage.destination?.name ?? "—"}</td>
@@ -44,7 +44,7 @@ export default async function AdminToursPage() {
                       className={
                         tourPackage.published
                           ? "rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                          : "rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600 dark:bg-stone-800 dark:text-stone-400"
                       }
                     >
                       {tourPackage.published ? "Published" : "Draft"}
@@ -55,13 +55,13 @@ export default async function AdminToursPage() {
                   <div className="flex items-center gap-4">
                     <Link
                       href={`/admin/tours/${tourPackage.id}/itinerary`}
-                      className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                      className="text-sm font-medium text-stone-900 hover:underline dark:text-stone-50"
                     >
                       Itinerary
                     </Link>
                     <Link
                       href={`/admin/tours/${tourPackage.id}/edit`}
-                      className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                      className="text-sm font-medium text-stone-900 hover:underline dark:text-stone-50"
                     >
                       Edit
                     </Link>
