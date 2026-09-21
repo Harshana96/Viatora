@@ -8,6 +8,37 @@ test.describe("public pages", () => {
     await expect(page.getByRole("heading", { name: "Viatora" })).toBeVisible();
   });
 
+  test("homepage shows popular packages, destinations and travel categories", async ({ page }) => {
+    await page.goto("/");
+
+    await expect(page.getByRole("heading", { name: "Popular Tour Packages" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+
+    await expect(page.getByRole("heading", { name: "Popular Destinations" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Test Province/ })).toBeVisible();
+
+    await expect(page.getByRole("heading", { name: "Travel Categories" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Adventure" })).toBeVisible();
+
+    await expect(page.getByRole("heading", { name: "Why Sri Lanka" })).toBeVisible();
+  });
+
+  test("homepage search box navigates to filtered tours listing", async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("Search tours, e.g. 'hill country'").fill("E2E Test Package");
+    await page.getByRole("button", { name: "Search" }).click();
+
+    await expect(page).toHaveURL(/\/tours\?query=/);
+    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+  });
+
+  test("homepage travel category link filters tours by type", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: "Adventure" }).click();
+
+    await expect(page).toHaveURL(/\/tours\?travelType=ADVENTURE/);
+  });
+
   test("tours listing shows the seeded published package", async ({ page }) => {
     await page.goto("/tours");
     await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();

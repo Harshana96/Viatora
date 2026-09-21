@@ -32,6 +32,7 @@ export type PackageFilters = {
   travelType?: TravelType;
   duration?: DurationBucket;
   budget?: BudgetBucket;
+  take?: number;
 };
 
 export async function listPublishedPackages(filters: PackageFilters = {}) {
@@ -74,6 +75,7 @@ export async function listPublishedPackages(filters: PackageFilters = {}) {
     where,
     orderBy: { createdAt: "desc" },
     include: { destination: true },
+    take: filters.take,
   });
 }
 

@@ -1,7 +1,7 @@
 import { TravelType } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 
+import { PackageCard } from "@/components/tours/PackageCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -131,27 +131,13 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {packages.map((tourPackage) => (
             <li key={tourPackage.id}>
-              <Link
-                href={`/tours/${tourPackage.slug}`}
-                className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
-              >
-                {tourPackage.coverImageUrl ? (
-                  <Image
-                    src={tourPackage.coverImageUrl}
-                    alt={tourPackage.name}
-                    width={400}
-                    height={200}
-                    className="h-36 w-full object-cover"
-                  />
-                ) : null}
-                <div className="p-4">
-                  <p className="text-sm text-zinc-500">
-                    {tourPackage.durationDays} days
-                    {tourPackage.destination ? ` · ${tourPackage.destination.name}` : ""}
-                  </p>
-                  <p className="mt-1 text-lg font-semibold">{tourPackage.name}</p>
-                </div>
-              </Link>
+              <PackageCard
+                slug={tourPackage.slug}
+                name={tourPackage.name}
+                durationDays={tourPackage.durationDays}
+                destinationName={tourPackage.destination?.name}
+                coverImageUrl={tourPackage.coverImageUrl}
+              />
             </li>
           ))}
         </ul>
