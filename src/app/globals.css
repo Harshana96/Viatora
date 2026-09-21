@@ -1,10 +1,75 @@
 @import "tailwindcss";
 
+/* No dark theme for now (explicit client request). Switches Tailwind's
+   dark: variant to only match a .dark class on <html>, which nothing in
+   the app currently adds -- so dark: utilities never activate, regardless
+   of OS/browser color-scheme preference. A manual light/dark toggle can
+   be added later by adding/removing that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #fdfbf7;
+  /* Legacy tokens (still used by pages not yet migrated to the new
+     "Tropical Island Discovery" design system below: /tours, /destinations,
+     package/destination detail, admin panel). */
+  --background: #fff8f5;
   --foreground: #1c1917;
   --accent: #0f766e;
   --accent-foreground: #f0fdfa;
+
+  /* Tropical Island Discovery design system (from the Stitch export) --
+     light-first, colorful, no auto dark mode. Currently used by the
+     homepage and shared public header/footer; other pages migrate to this
+     incrementally. */
+  --surface: #fff8f5;
+  --surface-bright: #fff8f5;
+  --surface-dim: #e2d8d2;
+  --surface-crisp: #ffffff;
+  --surface-warm: #fafaf9;
+  --surface-muted: #f5f5f4;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #fcf2eb;
+  --surface-container: #f6ece6;
+  --surface-container-high: #f0e6e0;
+  --surface-container-highest: #eae1da;
+  --surface-variant: #eae1da;
+
+  --on-surface: #1f1b17;
+  --on-surface-variant: #3f4850;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #a8a29e;
+  --border-warm: #e7e5e4;
+
+  --primary: #006194;
+  --on-primary: #ffffff;
+  --primary-container: #007bb9;
+  --on-primary-container: #fdfcff;
+  --primary-fixed: #cce5ff;
+  --primary-fixed-dim: #93ccff;
+
+  --secondary: #9d4300;
+  --on-secondary: #ffffff;
+  --secondary-container: #fd761a;
+  --on-secondary-container: #5c2400;
+  --secondary-fixed: #ffdbca;
+  --secondary-fixed-dim: #ffb690;
+  --on-secondary-fixed: #341100;
+  --on-secondary-fixed-variant: #783200;
+
+  --tertiary: #006948;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #00855d;
+  --on-tertiary-container: #f5fff7;
+  --tertiary-fixed: #85f8c4;
+  --tertiary-fixed-dim: #68dba9;
+  --on-tertiary-fixed: #002114;
+  --on-tertiary-fixed-variant: #005137;
+
+  --ocean-turquoise: #06b6d4;
+  --sunset-coral: #fb923c;
+  --palm-emerald: #10b981;
+  --sand-gold: #fbbf24;
+  --sand-tint: #fffbeb;
 }
 
 @theme inline {
@@ -12,17 +77,60 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-crisp: var(--surface-crisp);
+  --color-surface-warm: var(--surface-warm);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-warm: var(--border-warm);
+
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-primary-fixed: var(--primary-fixed);
+  --color-primary-fixed-dim: var(--primary-fixed-dim);
+
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-secondary-fixed: var(--secondary-fixed);
+  --color-secondary-fixed-dim: var(--secondary-fixed-dim);
+  --color-on-secondary-fixed: var(--on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--on-secondary-fixed-variant);
+
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-tertiary-fixed: var(--tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--tertiary-fixed-dim);
+  --color-on-tertiary-fixed: var(--on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--on-tertiary-fixed-variant);
+
+  --color-ocean-turquoise: var(--ocean-turquoise);
+  --color-sunset-coral: var(--sunset-coral);
+  --color-palm-emerald: var(--palm-emerald);
+  --color-sand-gold: var(--sand-gold);
+  --color-sand-tint: var(--sand-tint);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #12100e;
-    --foreground: #f2efe9;
-    --accent: #2dd4bf;
-    --accent-foreground: #042f2e;
-  }
 }
 
 * {
@@ -43,4 +151,29 @@ h3 {
 
 p {
   text-wrap: pretty;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--surface-warm);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-warm);
+  border-radius: 9999px;
 }
