@@ -5,6 +5,8 @@ npm install
 cp .env.example .env   # fill in DATABASE_URL, Mapbox, Cloudinary keys, AUTH_SECRET
 npx prisma migrate dev
 npm run create-admin -- admin@example.com yourpassword "Your Name"
+npm run db:seed   # optional: populate 4 destinations, 7 places, 4 hotels,
+                  # 3 published packages with full itineraries, 1 enquiry
 npm run dev
 ```
 
@@ -24,6 +26,14 @@ npm run dev
 - Create/reset an admin login: `npm run create-admin -- <email> <password> [name]`
   (upserts a `User` row with a bcrypt-hashed password — there is no public
   admin signup flow by design)
+- Seed demo data: `npm run db:seed` (`prisma/seed.ts`) — idempotent (uses
+  `upsert` keyed on `slug`/`name`, safe to re-run without creating
+  duplicates), coexists with whatever else is already in the database
+  rather than clearing it. Covers every entity: 4 destinations, 7 places
+  across all `PlaceCategory` values in use, 4 hotels, 3 published
+  `TourPackage`s (one per `TravelType` used: `CULTURAL`, `WILDLIFE`,
+  `HONEYMOON`) each with a full multi-day itinerary
+  (`TourDay`/`TourDayPlace`/activities), and 1 sample `Enquiry`.
 
 ## Branching
 
