@@ -11,6 +11,14 @@ export async function listDestinations() {
   return db.destination.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+export async function listPopularDestinations(take: number) {
+  return db.destination.findMany({
+    orderBy: { createdAt: "desc" },
+    take,
+    include: { images: { orderBy: { createdAt: "asc" }, take: 1 } },
+  });
+}
+
 export async function getDestination(id: string) {
   return db.destination.findUnique({
     where: { id },
