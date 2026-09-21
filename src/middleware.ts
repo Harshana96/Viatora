@@ -1,6 +1,11 @@
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/lib/auth";
+import { authConfig } from "@/lib/auth.config";
+
+// Uses the edge-safe config directly (not src/lib/auth.ts) so this
+// middleware bundle doesn't pull in bcryptjs/Prisma — see auth.config.ts.
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const isLoggedIn = Boolean(req.auth);
