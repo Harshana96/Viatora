@@ -8,7 +8,7 @@ test.describe("public pages", () => {
     await expect(page.getByRole("heading", { name: "Your Sri Lanka Journey, Planned Simply." })).toBeVisible();
   });
 
-  test("homepage shows popular packages, destinations and travel categories", async ({ page }) => {
+  test("homepage shows popular packages, destinations and why-Sri-Lanka sections", async ({ page }) => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { name: "Popular Tour Packages" })).toBeVisible();
@@ -17,26 +17,16 @@ test.describe("public pages", () => {
     await expect(page.getByRole("heading", { name: "Popular Destinations" })).toBeVisible();
     await expect(page.getByRole("link", { name: /Test Province/ })).toBeVisible();
 
-    await expect(page.getByRole("heading", { name: "Travel Categories" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Adventure" })).toBeVisible();
-
     await expect(page.getByRole("heading", { name: "Why Sri Lanka" })).toBeVisible();
   });
 
-  test("homepage search box navigates to filtered tours listing", async ({ page }) => {
+  test("homepage group size and arrival month form navigates to the tours page", async ({ page }) => {
     await page.goto("/");
-    await page.getByPlaceholder("Search tours, e.g. 'hill country'").fill("E2E Test Package");
-    await page.getByRole("button", { name: "Search" }).click();
+    await page.getByLabel("Group size").selectOption({ index: 1 });
+    await page.getByLabel("Arrival month").selectOption({ index: 1 });
+    await page.getByRole("button", { name: "Explore My Journey" }).click();
 
-    await expect(page).toHaveURL(/\/tours\?query=/);
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
-  });
-
-  test("homepage travel category link filters tours by type", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("link", { name: "Adventure" }).click();
-
-    await expect(page).toHaveURL(/\/tours\?travelType=ADVENTURE/);
+    await expect(page).toHaveURL(/\/tours\?groupSize=.+&month=\d+/);
   });
 
   test("tours listing shows the seeded published package", async ({ page }) => {
@@ -44,12 +34,16 @@ test.describe("public pages", () => {
     await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
   });
 
-  test("search filter narrows the tours listing", async ({ page }) => {
-    await page.goto("/tours?query=E2E+Test+Package");
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+  test("packages only show an estimated price once group size and arrival month are selected", async ({ page }) => {
+    await page.goto("/tours");
+    await expect(page.getByText("Select a group size and arrival month")).toBeVisible();
+    await expect(page.getByText("/ person")).toHaveCount(0);
 
-    await page.goto("/tours?query=Nonexistent+Package+Name");
-    await expect(page.getByText("No tour packages match your filters.")).toBeVisible();
+    await page.getByLabel("Group size").selectOption({ index: 1 });
+    await page.getByLabel("Arrival month").selectOption({ index: 1 });
+    await page.getByRole("button", { name: "Apply" }).click();
+
+    await expect(page.getByText("/ person").first()).toBeVisible();
   });
 
   test("package detail page renders", async ({ page }) => {
