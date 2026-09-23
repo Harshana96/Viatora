@@ -4,8 +4,12 @@ import { DestinationCard } from "@/components/destinations/DestinationCard";
 import { PackageCard } from "@/components/tours/PackageCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { monthOptions } from "@/lib/months";
 import { travelTypeLabels } from "@/lib/travel-type";
 import { listPopularDestinations } from "@/server/destinations/actions";
+import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
 import { listPublishedPackages } from "@/server/tours/actions";
 
 export const dynamic = "force-dynamic";
@@ -30,23 +34,54 @@ const whySriLanka = [
 ];
 
 export default async function HomePage() {
-  const [popularPackages, popularDestinations] = await Promise.all([
+  const [popularPackages, popularDestinations, groupSizeRanges] = await Promise.all([
     listPublishedPackages({ take: 6 }),
     listPopularDestinations(6),
+    listGroupSizeRanges(),
   ]);
 
   return (
     <main className="flex-1">
       {/* Hero */}
       <section className="flex flex-col items-center gap-4 px-6 py-24 text-center">
-        <h1 className="text-4xl font-semibold tracking-tight">Viatora</h1>
+        <h1 className="text-4xl font-semibold tracking-tight">Your Sri Lanka Journey, Planned Simply.</h1>
         <p className="max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-          Discover Sri Lanka, understand the complete journey visually, and enquire about a tour.
+          Explore curated Sri Lankan journeys, discover every destination along the way, and find the right
+          experience for your group.
         </p>
-        <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/tours">
-            <Button>Explore Tours</Button>
-          </Link>
+
+        <form
+          action="/tours"
+          className="mt-4 flex w-full max-w-xl flex-col gap-4 rounded-lg border border-zinc-200 p-4 text-left sm:flex-row sm:items-end dark:border-zinc-800"
+        >
+          <div className="flex-1">
+            <Label htmlFor="groupSize">Group size</Label>
+            <Select id="groupSize" name="groupSize" defaultValue="">
+              <option value="">Any group size</option>
+              {groupSizeRanges.map((range) => (
+                <option key={range.id} value={range.id}>
+                  {range.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Label htmlFor="month">Arrival month</Label>
+            <Select id="month" name="month" defaultValue="">
+              <option value="">Any month</option>
+              {monthOptions.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <Button type="submit" className="sm:mb-0.5">
+            Explore My Journey
+          </Button>
+        </form>
+
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
           <Link href="/destinations">
             <Button variant="secondary">Browse Destinations</Button>
           </Link>

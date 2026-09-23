@@ -22,14 +22,20 @@ export async function getEnquiry(id: string) {
 
 export async function createEnquiry(formData: FormData) {
   const packageId = String(formData.get("packageId") ?? "").trim();
+  const groupSizeRangeId = String(formData.get("groupSizeRangeId") ?? "").trim();
+  const arrivalMonthRaw = String(formData.get("arrivalMonth") ?? "").trim();
+  const estimatedTotalRaw = String(formData.get("estimatedTotal") ?? "").trim();
 
   const parsed = enquirySchema.parse({
     name: String(formData.get("name") ?? ""),
     email: String(formData.get("email") ?? ""),
     phone: String(formData.get("phone") ?? ""),
     preferredDate: String(formData.get("preferredDate") ?? "") || undefined,
+    arrivalMonth: arrivalMonthRaw || undefined,
     travellersCount: formData.get("travellersCount"),
+    groupSizeRangeId,
     packageId,
+    estimatedTotal: estimatedTotalRaw || undefined,
     message: String(formData.get("message") ?? ""),
   });
 
@@ -39,8 +45,11 @@ export async function createEnquiry(formData: FormData) {
       email: parsed.email,
       phone: parsed.phone,
       preferredDate: parsed.preferredDate ?? null,
+      arrivalMonth: parsed.arrivalMonth ?? null,
       travellersCount: parsed.travellersCount,
+      groupSizeRangeId: parsed.groupSizeRangeId || null,
       packageId: parsed.packageId || null,
+      estimatedTotal: parsed.estimatedTotal ?? null,
       message: parsed.message || null,
     },
   });

@@ -25,6 +25,13 @@ export async function getDay(id: string) {
   return db.tourDay.findUnique({ where: { id } });
 }
 
+function parseLines(raw: string): string[] {
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 function parseDayForm(formData: FormData) {
   const parsed = tourDaySchema.parse({
     packageId: String(formData.get("packageId") ?? ""),
@@ -32,6 +39,8 @@ function parseDayForm(formData: FormData) {
     title: String(formData.get("title") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     hotelId: String(formData.get("hotelId") ?? "").trim(),
+    alternativeHotelIds: formData.getAll("alternativeHotelIds").map(String),
+    optionalActivities: parseLines(String(formData.get("optionalActivities") ?? "")),
   });
 
   return {
@@ -40,6 +49,8 @@ function parseDayForm(formData: FormData) {
     title: parsed.title || null,
     description: parsed.description || null,
     hotelId: parsed.hotelId || null,
+    alternativeHotelIds: parsed.alternativeHotelIds,
+    optionalActivities: parsed.optionalActivities,
   };
 }
 

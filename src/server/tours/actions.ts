@@ -125,6 +125,7 @@ function parsePackageForm(formData: FormData) {
     highlights: parseList(String(formData.get("highlights") ?? "")),
     included: parseList(String(formData.get("included") ?? "")),
     excluded: parseList(String(formData.get("excluded") ?? "")),
+    importantInfo: parseList(String(formData.get("importantInfo") ?? "")),
     destinationId: destinationIdRaw,
     published: formData.get("published") === "on",
   });

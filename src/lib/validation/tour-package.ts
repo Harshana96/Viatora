@@ -15,6 +15,7 @@ export const tourPackageSchema = z.object({
   highlights: z.array(z.string().min(1)).default([]),
   included: z.array(z.string().min(1)).default([]),
   excluded: z.array(z.string().min(1)).default([]),
+  importantInfo: z.array(z.string().min(1)).default([]),
   destinationId: z.string().optional().or(z.literal("")),
   published: z.boolean().default(false),
 });

@@ -98,6 +98,15 @@ export function PackageForm({ action, tourPackage, destinations }: Props) {
         <Label htmlFor="excluded">What&apos;s not included (one per line)</Label>
         <Textarea id="excluded" name="excluded" rows={3} defaultValue={tourPackage?.excluded.join("\n")} />
       </div>
+      <div>
+        <Label htmlFor="importantInfo">Important information (one per line)</Label>
+        <Textarea
+          id="importantInfo"
+          name="importantInfo"
+          rows={3}
+          defaultValue={tourPackage?.importantInfo.join("\n")}
+        />
+      </div>
       <div className="flex items-center gap-2">
         <input
           id="published"

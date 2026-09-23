@@ -10,6 +10,13 @@ export async function listHotels() {
   return db.hotel.findMany({ orderBy: { name: "asc" } });
 }
 
+export async function listHotelsByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return [];
+  }
+  return db.hotel.findMany({ where: { id: { in: ids } } });
+}
+
 export async function createHotel(formData: FormData) {
   const ratingRaw = String(formData.get("rating") ?? "").trim();
 

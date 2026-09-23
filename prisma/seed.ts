@@ -42,11 +42,29 @@ async function seedHotel(data: { name: string; location: string; rating: number 
   return prisma.hotel.create({ data });
 }
 
+async function seedGroupSizeRange(data: { label: string; minSize: number; maxSize: number | null; order: number }) {
+  const existing = await prisma.groupSizeRange.findFirst({ where: { label: data.label } });
+  if (existing) {
+    return prisma.groupSizeRange.update({ where: { id: existing.id }, data });
+  }
+  return prisma.groupSizeRange.create({ data });
+}
+
+async function seedSeason(data: { name: string; months: number[]; order: number }) {
+  const existing = await prisma.season.findFirst({ where: { name: data.name } });
+  if (existing) {
+    return prisma.season.update({ where: { id: existing.id }, data });
+  }
+  return prisma.season.create({ data });
+}
+
 type PackageDay = {
   dayNumber: number;
   title: string;
   description: string;
   hotelId?: string;
+  alternativeHotelIds?: string[];
+  optionalActivities?: string[];
   places: { placeId: string; activities: string[] }[];
 };
 
@@ -61,28 +79,31 @@ async function seedPackage(
     highlights: string[];
     included: string[];
     excluded: string[];
-    destinationId: string;
+    importantInfo?: string[];
+    destinationId?: string;
     published: boolean;
   },
   days: PackageDay[],
 ) {
+  const packageData = { ...data, importantInfo: data.importantInfo ?? [], destinationId: data.destinationId ?? null };
   const tourPackage = await prisma.tourPackage.upsert({
     where: { slug: data.slug },
-    update: data,
-    create: data,
+    update: packageData,
+    create: packageData,
   });
 
   for (const day of days) {
+    const dayData = {
+      title: day.title,
+      description: day.description,
+      hotelId: day.hotelId ?? null,
+      alternativeHotelIds: day.alternativeHotelIds ?? [],
+      optionalActivities: day.optionalActivities ?? [],
+    };
     const tourDay = await prisma.tourDay.upsert({
       where: { packageId_dayNumber: { packageId: tourPackage.id, dayNumber: day.dayNumber } },
-      update: { title: day.title, description: day.description, hotelId: day.hotelId },
-      create: {
-        packageId: tourPackage.id,
-        dayNumber: day.dayNumber,
-        title: day.title,
-        description: day.description,
-        hotelId: day.hotelId,
-      },
+      update: dayData,
+      create: { packageId: tourPackage.id, dayNumber: day.dayNumber, ...dayData },
     });
 
     for (const [order, place] of day.places.entries()) {
@@ -95,6 +116,25 @@ async function seedPackage(
   }
 
   return tourPackage;
+}
+
+async function seedPricingRule(data: {
+  packageId: string;
+  groupSizeRangeId: string;
+  seasonId: string;
+  pricePerPerson: number;
+}) {
+  await prisma.pricingRule.upsert({
+    where: {
+      packageId_groupSizeRangeId_seasonId: {
+        packageId: data.packageId,
+        groupSizeRangeId: data.groupSizeRangeId,
+        seasonId: data.seasonId,
+      },
+    },
+    update: { pricePerPerson: data.pricePerPerson },
+    create: data,
+  });
 }
 
 async function main() {
@@ -391,6 +431,265 @@ async function main() {
       },
     ],
   );
+
+  // --- MVP flow demo data: group sizes, seasons, additional destinations
+  // and the three curated packages from knowledge/product/mvp-scope
+  // (8N/9D, 7N/8D, 6N/7D), each fully priced. ---
+
+  const nuwaraEliya = await seedDestination({
+    name: "Nuwara Eliya",
+    slug: "nuwara-eliya",
+    description:
+      "Known as 'Little England', a cool-climate hill station surrounded by tea estates, colonial-era buildings and Horton Plains National Park.",
+    location: "Central Province",
+    thingsToDo: ["Pedro Tea Estate tour", "Horton Plains and World's End hike", "Gregory Lake boat ride", "Victoria Park"],
+    latitude: 6.9497,
+    longitude: 80.7891,
+  });
+
+  const ella = await seedDestination({
+    name: "Ella",
+    slug: "ella",
+    description:
+      "A small hill country town amid tea plantations and dramatic mountain scenery, known for hiking trails and the iconic Nine Arches Bridge.",
+    location: "Uva Province",
+    thingsToDo: ["Nine Arches Bridge", "Little Adam's Peak hike", "Ella Rock hike", "Scenic train ride"],
+    latitude: 6.8667,
+    longitude: 81.0466,
+  });
+
+  const mirissa = await seedDestination({
+    name: "Mirissa",
+    slug: "mirissa",
+    description:
+      "A laid-back south coast beach town, one of the best places in Sri Lanka for whale watching alongside palm-lined beaches.",
+    location: "Southern Province",
+    thingsToDo: ["Whale and dolphin watching boat trip", "Relax on Mirissa Beach", "Sunset at Parrot Rock", "Surfing"],
+    latitude: 5.9483,
+    longitude: 80.4589,
+  });
+
+  const hortonPlains = await seedPlace({
+    name: "Horton Plains National Park",
+    slug: "horton-plains-national-park",
+    description: "A highland plateau national park known for the World's End escarpment and cool cloud-forest hiking.",
+    category: "MOUNTAIN",
+    latitude: 6.8021,
+    longitude: 80.7996,
+    destinationId: nuwaraEliya.id,
+  });
+
+  const pedroTeaEstate = await seedPlace({
+    name: "Pedro Tea Estate",
+    slug: "pedro-tea-estate",
+    description: "A working high-grown tea estate and factory just outside Nuwara Eliya, open for tours and tastings.",
+    category: "TEA_PLANTATION",
+    latitude: 6.9667,
+    longitude: 80.7333,
+    destinationId: nuwaraEliya.id,
+  });
+
+  const nineArchesBridge = await seedPlace({
+    name: "Nine Arches Bridge",
+    slug: "nine-arches-bridge",
+    description: "A century-old colonial-era railway viaduct set among tea plantations, one of Sri Lanka's most photographed landmarks.",
+    category: "ADVENTURE",
+    latitude: 6.8794,
+    longitude: 81.0603,
+    destinationId: ella.id,
+  });
+
+  const littleAdamsPeak = await seedPlace({
+    name: "Little Adam's Peak",
+    slug: "little-adams-peak",
+    description: "An easy, scenic hike through tea fields to a viewpoint over the Ella Gap.",
+    category: "MOUNTAIN",
+    latitude: 6.8747,
+    longitude: 81.0553,
+    destinationId: ella.id,
+  });
+
+  const mirissaBeach = await seedPlace({
+    name: "Mirissa Beach",
+    slug: "mirissa-beach",
+    description: "A crescent-shaped, palm-fringed beach popular for swimming, surfing and sunset views.",
+    category: "BEACH",
+    latitude: 5.9483,
+    longitude: 80.4589,
+    destinationId: mirissa.id,
+  });
+
+  const mirissaWhaleWatching = await seedPlace({
+    name: "Mirissa Whale Watching Point",
+    slug: "mirissa-whale-watching-point",
+    description: "Departure point for boat trips to see blue whales and spinner dolphins in the deep water offshore.",
+    category: "WILDLIFE",
+    latitude: 5.933,
+    longitude: 80.45,
+    destinationId: mirissa.id,
+  });
+
+  const mahaweliReach = await seedHotel({ name: "Mahaweli Reach Hotel", location: "Kandy", rating: 4.0 });
+  const heritanceTeaFactory = await seedHotel({ name: "Heritance Tea Factory", location: "Nuwara Eliya", rating: 4.5 });
+  const grandHotelNuwaraEliya = await seedHotel({ name: "Grand Hotel Nuwara Eliya", location: "Nuwara Eliya", rating: 4.0 });
+  const jetwingStAndrews = await seedHotel({ name: "Jetwing St. Andrew's", location: "Nuwara Eliya", rating: 4.2 });
+  const ella98Acres = await seedHotel({ name: "98 Acres Resort", location: "Ella", rating: 4.6 });
+  const ellaFlowerGarden = await seedHotel({ name: "Ella Flower Garden Resort", location: "Ella", rating: 4.1 });
+  const capeWeligama = await seedHotel({ name: "Cape Weligama", location: "Mirissa", rating: 4.7 });
+  const mirissaHills = await seedHotel({ name: "Mirissa Hills", location: "Mirissa", rating: 4.3 });
+
+  const twoTravelers = await seedGroupSizeRange({ label: "2 Travelers", minSize: 2, maxSize: 2, order: 0 });
+  const twoToFive = await seedGroupSizeRange({ label: "2-5 Travelers", minSize: 2, maxSize: 5, order: 1 });
+  const fiveToTen = await seedGroupSizeRange({ label: "5-10 Travelers", minSize: 5, maxSize: 10, order: 2 });
+  const tenToTwenty = await seedGroupSizeRange({ label: "10-20 Travelers", minSize: 10, maxSize: 20, order: 3 });
+
+  const peakSeason = await seedSeason({ name: "Peak Season", months: [12, 1, 2], order: 0 });
+  const shoulderSeason = await seedSeason({ name: "Shoulder Season", months: [3, 4, 9, 10, 11], order: 1 });
+  const lowSeason = await seedSeason({ name: "Low Season", months: [5, 6, 7, 8], order: 2 });
+
+  const commonIncluded = [
+    "Private air-conditioned vehicle and driver",
+    "Breakfast daily",
+    "Airport transfers",
+    "Entrance fees to listed sites",
+  ];
+  const commonExcluded = [
+    "International flights",
+    "Lunch and dinner (except where noted)",
+    "Personal expenses",
+    "Travel insurance",
+    "Visa-related costs",
+    "Optional / additional experiences",
+  ];
+  const commonImportantInfo = [
+    "Hotel selection reflects preference only — final availability is confirmed by our team after your enquiry.",
+    "Itinerary order may be adjusted slightly for weather, road conditions or site opening hours.",
+    "Prices shown are per person, based on double/twin room occupancy, and are estimates pending final quotation.",
+  ];
+
+  const grandJourney = await seedPackage(
+    {
+      name: "Sri Lanka Grand Journey",
+      slug: "sri-lanka-grand-journey",
+      durationDays: 9,
+      startingPrice: 820,
+      travelType: "CULTURAL",
+      description:
+        "A curated journey through Sri Lanka's culture, mountains, wildlife and coastline — from the royal capital of Kandy, through tea country and hill-country hiking, to a leopard safari and whale watching on the south coast.",
+      highlights: [
+        "Temple of the Sacred Tooth Relic in Kandy",
+        "Tea country in Nuwara Eliya and the World's End hike",
+        "Nine Arches Bridge and Little Adam's Peak in Ella",
+        "Leopard safari in Yala National Park",
+        "Whale watching and beach time in Mirissa",
+      ],
+      included: commonIncluded,
+      excluded: commonExcluded,
+      importantInfo: commonImportantInfo,
+      published: true,
+    },
+    [
+      { dayNumber: 1, title: "Arrival and Kandy", description: "Arrive and transfer to Kandy, visiting the Temple of the Sacred Tooth Relic in the evening.", hotelId: cinnamonCitadel.id, alternativeHotelIds: [mahaweliReach.id], places: [{ placeId: templeOfTooth.id, activities: ["Temple of the Tooth evening visit"] }] },
+      { dayNumber: 2, title: "Kandy", description: "Morning tea estate visit, afternoon walk around Kandy Lake, evening cultural dance show.", hotelId: cinnamonCitadel.id, alternativeHotelIds: [mahaweliReach.id], places: [{ placeId: hanthanaTea.id, activities: ["Tea factory tour", "Tea tasting"] }, { placeId: kandyLake.id, activities: ["Lakeside walk", "Evening cultural dance show"] }] },
+      { dayNumber: 3, title: "Travel to Nuwara Eliya", description: "Scenic drive up into tea country, visiting the Pedro Tea Estate on arrival.", hotelId: heritanceTeaFactory.id, alternativeHotelIds: [grandHotelNuwaraEliya.id, jetwingStAndrews.id], places: [{ placeId: pedroTeaEstate.id, activities: ["Tea estate tour and tasting"] }], optionalActivities: ["Gregory Lake boat ride"] },
+      { dayNumber: 4, title: "Nuwara Eliya — Horton Plains", description: "Early start for the Horton Plains hike to World's End before the clouds roll in.", hotelId: heritanceTeaFactory.id, alternativeHotelIds: [grandHotelNuwaraEliya.id], places: [{ placeId: hortonPlains.id, activities: ["Horton Plains and World's End hike"] }] },
+      { dayNumber: 5, title: "Travel to Ella", description: "Drive to Ella, visiting the Nine Arches Bridge and taking in the Ella Gap views.", hotelId: ella98Acres.id, alternativeHotelIds: [ellaFlowerGarden.id], places: [{ placeId: nineArchesBridge.id, activities: ["Nine Arches Bridge visit"] }] },
+      { dayNumber: 6, title: "Ella to Yala", description: "Morning hike up Little Adam's Peak, then transfer to Yala for an evening safari.", hotelId: yalaSafariCamp.id, places: [{ placeId: littleAdamsPeak.id, activities: ["Little Adam's Peak hike"] }, { placeId: yalaPark.id, activities: ["Evening safari jeep drive"] }], optionalActivities: ["Additional safari game drive"] },
+      { dayNumber: 7, title: "Yala to Mirissa", description: "Early morning safari drive, the best time to spot leopards, then transfer to the south coast.", hotelId: capeWeligama.id, alternativeHotelIds: [mirissaHills.id], places: [{ placeId: yalaPark.id, activities: ["Morning safari jeep drive"] }] },
+      { dayNumber: 8, title: "Mirissa", description: "Morning whale watching boat trip, afternoon free on Mirissa Beach.", hotelId: capeWeligama.id, alternativeHotelIds: [mirissaHills.id], places: [{ placeId: mirissaWhaleWatching.id, activities: ["Whale and dolphin watching boat trip"] }, { placeId: mirissaBeach.id, activities: ["Beach afternoon"] }], optionalActivities: ["Surfing lesson", "Snorkeling trip"] },
+      { dayNumber: 9, title: "Departure", description: "Morning at leisure before transfer for departure.", places: [] },
+    ],
+  );
+
+  const explorer = await seedPackage(
+    {
+      name: "Sri Lanka Explorer",
+      slug: "sri-lanka-explorer",
+      durationDays: 8,
+      startingPrice: 650,
+      travelType: "ADVENTURE",
+      description:
+        "A well-rounded week through Sri Lanka's cultural capital, hill-country hiking trails, a wildlife safari and the historic Galle Fort.",
+      highlights: [
+        "Temple of the Sacred Tooth Relic in Kandy",
+        "Nine Arches Bridge and hiking in Ella",
+        "Leopard safari in Yala National Park",
+        "Sunset walk on the Galle Fort ramparts",
+      ],
+      included: commonIncluded,
+      excluded: commonExcluded,
+      importantInfo: commonImportantInfo,
+      published: true,
+    },
+    [
+      { dayNumber: 1, title: "Arrival and Kandy", description: "Arrive and transfer to Kandy, visiting the Temple of the Sacred Tooth Relic.", hotelId: cinnamonCitadel.id, alternativeHotelIds: [mahaweliReach.id], places: [{ placeId: templeOfTooth.id, activities: ["Temple of the Tooth visit"] }] },
+      { dayNumber: 2, title: "Kandy tea country", description: "Morning tea estate tour, afternoon at leisure around Kandy Lake.", hotelId: cinnamonCitadel.id, alternativeHotelIds: [mahaweliReach.id], places: [{ placeId: hanthanaTea.id, activities: ["Tea factory tour"] }, { placeId: kandyLake.id, activities: ["Lakeside walk"] }] },
+      { dayNumber: 3, title: "Travel to Ella", description: "Scenic drive to Ella through tea plantations, visiting the Nine Arches Bridge.", hotelId: ella98Acres.id, alternativeHotelIds: [ellaFlowerGarden.id], places: [{ placeId: nineArchesBridge.id, activities: ["Nine Arches Bridge visit"] }] },
+      { dayNumber: 4, title: "Ella hiking", description: "Morning hike up Little Adam's Peak, afternoon free to explore Ella town.", hotelId: ella98Acres.id, places: [{ placeId: littleAdamsPeak.id, activities: ["Little Adam's Peak hike"] }], optionalActivities: ["Ella Rock hike"] },
+      { dayNumber: 5, title: "Travel to Yala", description: "Transfer to Yala, arriving in time for an evening safari drive.", hotelId: yalaSafariCamp.id, places: [{ placeId: yalaPark.id, activities: ["Evening safari jeep drive"] }] },
+      { dayNumber: 6, title: "Yala to Galle", description: "Early morning safari drive, then transfer to the south coast, arriving at Galle Fort by evening.", hotelId: jetwingLighthouse.id, places: [{ placeId: yalaPark.id, activities: ["Morning safari jeep drive"] }, { placeId: galleFort.id, activities: ["Sunset walk on the ramparts"] }] },
+      { dayNumber: 7, title: "Galle Fort", description: "A full day exploring the fort's ramparts, colonial streets and boutiques.", hotelId: jetwingLighthouse.id, places: [{ placeId: galleFort.id, activities: ["Walking tour of the fort"] }], optionalActivities: ["Surfing lesson"] },
+      { dayNumber: 8, title: "Departure", description: "Morning at leisure on Unawatuna Beach before transfer for departure.", places: [{ placeId: unawatunaBeach.id, activities: ["Free morning at the beach"] }] },
+    ],
+  );
+
+  const highlights = await seedPackage(
+    {
+      name: "Sri Lanka Highlights",
+      slug: "sri-lanka-highlights",
+      durationDays: 7,
+      startingPrice: 550,
+      travelType: "CULTURAL",
+      description:
+        "A condensed introduction to Sri Lanka's essentials — the cultural capital of Kandy, the cool tea country of Nuwara Eliya, and the colonial coastal charm of Galle.",
+      highlights: [
+        "Temple of the Sacred Tooth Relic in Kandy",
+        "Tea estate tour in Nuwara Eliya",
+        "Horton Plains and World's End",
+        "Galle Fort and Unawatuna Beach",
+      ],
+      included: commonIncluded,
+      excluded: commonExcluded,
+      importantInfo: commonImportantInfo,
+      published: true,
+    },
+    [
+      { dayNumber: 1, title: "Arrival and Kandy", description: "Arrive and transfer to Kandy, visiting the Temple of the Sacred Tooth Relic.", hotelId: cinnamonCitadel.id, places: [{ placeId: templeOfTooth.id, activities: ["Temple of the Tooth visit"] }] },
+      { dayNumber: 2, title: "Kandy tea country", description: "Morning tea estate tour, afternoon walk around Kandy Lake.", hotelId: cinnamonCitadel.id, places: [{ placeId: hanthanaTea.id, activities: ["Tea factory tour"] }, { placeId: kandyLake.id, activities: ["Lakeside walk"] }] },
+      { dayNumber: 3, title: "Travel to Nuwara Eliya", description: "Scenic drive up into tea country, visiting the Pedro Tea Estate.", hotelId: heritanceTeaFactory.id, alternativeHotelIds: [grandHotelNuwaraEliya.id], places: [{ placeId: pedroTeaEstate.id, activities: ["Tea estate tour and tasting"] }] },
+      { dayNumber: 4, title: "Nuwara Eliya — Horton Plains", description: "Early start for the Horton Plains hike to World's End.", hotelId: heritanceTeaFactory.id, places: [{ placeId: hortonPlains.id, activities: ["Horton Plains and World's End hike"] }] },
+      { dayNumber: 5, title: "Travel to Galle", description: "Transfer to the south coast, exploring Galle Fort at sunset.", hotelId: jetwingLighthouse.id, places: [{ placeId: galleFort.id, activities: ["Sunset walk on the ramparts"] }] },
+      { dayNumber: 6, title: "Galle and Unawatuna", description: "Morning in Galle Fort, afternoon relaxing on Unawatuna Beach.", hotelId: jetwingLighthouse.id, places: [{ placeId: galleFort.id, activities: ["Walking tour of the fort"] }, { placeId: unawatunaBeach.id, activities: ["Beach afternoon"] }], optionalActivities: ["Surfing lesson"] },
+      { dayNumber: 7, title: "Departure", description: "Morning at leisure before transfer for departure.", places: [] },
+    ],
+  );
+
+  const groupMultiplier: Record<string, number> = {
+    [twoTravelers.id]: 1.15,
+    [twoToFive.id]: 1.0,
+    [fiveToTen.id]: 0.9,
+    [tenToTwenty.id]: 0.8,
+  };
+  const seasonMultiplier: Record<string, number> = {
+    [peakSeason.id]: 1.15,
+    [shoulderSeason.id]: 1.0,
+    [lowSeason.id]: 0.9,
+  };
+
+  for (const tourPackage of [grandJourney, explorer, highlights]) {
+    for (const groupSizeRange of [twoTravelers, twoToFive, fiveToTen, tenToTwenty]) {
+      for (const season of [peakSeason, shoulderSeason, lowSeason]) {
+        const base = Number(tourPackage.startingPrice);
+        const price = Math.round((base * groupMultiplier[groupSizeRange.id] * seasonMultiplier[season.id]) / 5) * 5;
+        await seedPricingRule({
+          packageId: tourPackage.id,
+          groupSizeRangeId: groupSizeRange.id,
+          seasonId: season.id,
+          pricePerPerson: price,
+        });
+      }
+    }
+  }
 
   const sampleEnquiry = await prisma.enquiry.findFirst({ where: { email: "n.perera.travel@example.com" } });
   if (!sampleEnquiry) {
