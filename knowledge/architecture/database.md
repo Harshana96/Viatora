@@ -27,10 +27,15 @@ Pricing (`GroupSizeRange`, `Season`, `PricingRule`) hangs off
 `src/server/pricing/engine.ts` and never exposed to the customer as
 individual line items — only the single resulting total.
 
+`Review` also belongs to `TourPackage`. Anyone can submit one (no login),
+but it's created with `approved: false` and stays invisible on the public
+package page until an admin approves it from `/admin/reviews` — the same
+draft/publish pattern as `TourPackage.published`.
+
 ## Delete behavior
 
-`TourPackage` owns `TourDay` (-> `TourDayPlace`), `Image`, and
-`PricingRule` — deleting a package cascades and deletes all of them
+`TourPackage` owns `TourDay` (-> `TourDayPlace`), `Image`, `PricingRule`,
+and `Review` — deleting a package cascades and deletes all of them
 (`onDelete: Cascade`). `Enquiry.packageId` is the one exception: deleting
 a package sets it to `null` on any existing enquiries instead of deleting
 them, since an enquiry is a business record that should survive its

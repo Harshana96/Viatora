@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { JourneyExplorer } from "@/components/itinerary/JourneyExplorer";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -22,10 +23,10 @@ export default async function TourPackagePage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ groupSize?: string; month?: string }>;
+  searchParams: Promise<{ groupSize?: string; month?: string; reviewed?: string }>;
 }) {
   const { slug } = await params;
-  const { groupSize, month } = await searchParams;
+  const { groupSize, month, reviewed } = await searchParams;
   const tourPackage = await getPackageBySlug(slug);
 
   if (!tourPackage) {
@@ -306,6 +307,8 @@ export default async function TourPackagePage({
             </Link>
           </div>
         </section>
+
+        <ReviewsSection packageId={tourPackage.id} packageSlug={tourPackage.slug} justSubmitted={reviewed === "1"} />
       </div>
     </main>
   );
