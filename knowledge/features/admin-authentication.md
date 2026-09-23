@@ -43,7 +43,7 @@ Enquiries) plus a "Sign out" button, rendered by the shared
   password against `passwordHash` with `bcrypt.compare`.
 - `src/app/api/auth/[...nextauth]/route.ts` re-exports `handlers` as
   `GET`/`POST` — the standard Auth.js App Router wiring.
-- `src/middleware.ts` creates its **own** `NextAuth(authConfig)` instance
+- `src/proxy.ts` creates its **own** `NextAuth(authConfig)` instance
   (not the one from `src/lib/auth.ts`) and uses only that instance's
   `auth()` to check the request. It wraps every request matching
   `/admin/:path*`: no session + not `/admin/login` → redirect to login
@@ -75,16 +75,18 @@ Enquiries) plus a "Sign out" button, rendered by the shared
 - `AUTH_SECRET` environment variable (session/JWT signing)
 - `User` model in the schema
 
-## Known Issue
+## Resolved: middleware.ts -> proxy.ts
 
 Next.js 16 deprecated the `middleware.ts` file convention in favor of
-`proxy.ts` (still supported, just warns on build/dev). The official
-codemod (`npx @next/codemod@canary middleware-to-proxy .`) did not
-transform this file — it likely doesn't yet recognize the Auth.js
-`auth((req) => ...)` wrapper pattern. Left as `middleware.ts` rather than
-hand-migrating a security-critical file against an unverified new API
-shape. Revisit when the codemod (or Auth.js's own docs) supports this
-pattern, or when `middleware.ts` support is actually removed.
+`proxy.ts`. The official codemod (`npx @next/codemod@canary
+middleware-to-proxy .`) only rewrites a function literally named
+`middleware`; it doesn't recognize the Auth.js `auth((req) => ...)`
+wrapper as the exported handler, so it ran as a no-op here (0 files
+changed). Migrated manually instead — the file was simply renamed
+`src/middleware.ts` -> `src/proxy.ts` with its contents (default export +
+`export const config = { matcher: [...] }`) unchanged, since the proxy
+convention keeps the same API shape. Verified with `next dev`/`next
+build`: no more deprecation warning, and route protection still works.
 
 ## Fixed Issue: Edge Function size on Vercel
 
@@ -129,7 +131,7 @@ Next.js's Server Action request framing. No automated test yet.
 
 - `src/lib/auth.config.ts` — edge-safe shared config (no providers)
 - `src/lib/auth.ts` — full Auth.js config, Credentials provider
-- `src/middleware.ts` — route protection (its own lightweight NextAuth instance)
+- `src/proxy.ts` — route protection (its own lightweight NextAuth instance; renamed from `middleware.ts` for Next.js 16)
 - `src/app/api/auth/[...nextauth]/route.ts` — Auth.js route handler
 - `src/app/admin/login/page.tsx`, `src/app/admin/login/actions.ts` — sign-in form/action
 - `src/app/admin/layout.tsx` — shared admin nav + sign-out
