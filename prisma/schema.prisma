@@ -105,7 +105,7 @@ model TourPackage {
 model TourDay {
   id                  String         @id @default(cuid())
   packageId           String
-  package             TourPackage    @relation(fields: [packageId], references: [id])
+  package             TourPackage    @relation(fields: [packageId], references: [id], onDelete: Cascade)
   dayNumber           Int
   title               String?
   description         String?
@@ -123,7 +123,7 @@ model TourDay {
 model TourDayPlace {
   id         String   @id @default(cuid())
   tourDayId  String
-  tourDay    TourDay  @relation(fields: [tourDayId], references: [id])
+  tourDay    TourDay  @relation(fields: [tourDayId], references: [id], onDelete: Cascade)
   placeId    String
   place      Place    @relation(fields: [placeId], references: [id])
   activities String[]
@@ -153,7 +153,7 @@ model Image {
   placeId       String?
   place         Place?       @relation(fields: [placeId], references: [id])
   packageId     String?
-  package       TourPackage? @relation(fields: [packageId], references: [id])
+  package       TourPackage? @relation(fields: [packageId], references: [id], onDelete: Cascade)
   createdAt     DateTime     @default(now())
 }
 
@@ -168,7 +168,7 @@ model Enquiry {
   groupSizeRangeId String?
   groupSizeRange   GroupSizeRange? @relation(fields: [groupSizeRangeId], references: [id])
   packageId        String?
-  package          TourPackage?    @relation(fields: [packageId], references: [id])
+  package          TourPackage?    @relation(fields: [packageId], references: [id], onDelete: SetNull)
   estimatedTotal   Decimal?
   message          String?
   status           EnquiryStatus   @default(NEW)
@@ -202,7 +202,7 @@ model Season {
 model PricingRule {
   id               String         @id @default(cuid())
   packageId        String
-  package          TourPackage    @relation(fields: [packageId], references: [id])
+  package          TourPackage    @relation(fields: [packageId], references: [id], onDelete: Cascade)
   groupSizeRangeId String
   groupSizeRange   GroupSizeRange @relation(fields: [groupSizeRangeId], references: [id])
   seasonId         String
