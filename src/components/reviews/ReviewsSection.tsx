@@ -1,18 +1,10 @@
+import { Stars } from "@/components/reviews/Stars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createReview, listApprovedReviews } from "@/server/reviews/actions";
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <span aria-label={`${rating} out of 5 stars`} className="text-amber-500">
-      {"★".repeat(rating)}
-      <span className="text-zinc-300 dark:text-zinc-700">{"★".repeat(5 - rating)}</span>
-    </span>
-  );
-}
 
 export async function ReviewsSection({
   packageId,
@@ -28,11 +20,11 @@ export async function ReviewsSection({
     reviews.length > 0 ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : null;
 
   return (
-    <section className="border-t border-zinc-200 pt-8 dark:border-zinc-800">
-      <div className="mb-6 flex items-baseline gap-3">
-        <h2 className="text-2xl font-semibold">Traveller Reviews</h2>
+    <section className="border-t border-border pt-8">
+      <div className="mb-8 flex items-baseline gap-3">
+        <h2 className="font-serif text-2xl">Traveller reviews</h2>
         {averageRating ? (
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted">
             <Stars rating={Math.round(averageRating)} /> {averageRating.toFixed(1)} ({reviews.length}{" "}
             {reviews.length === 1 ? "review" : "reviews"})
           </p>
@@ -42,27 +34,27 @@ export async function ReviewsSection({
       {reviews.length > 0 ? (
         <ul className="mb-8 flex flex-col gap-4">
           {reviews.map((review) => (
-            <li key={review.id} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+            <li key={review.id} className="border-t border-border pt-4">
               <div className="flex items-center justify-between">
                 <p className="font-medium">{review.name}</p>
                 <Stars rating={review.rating} />
               </div>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{review.comment}</p>
+              <p className="mt-2 text-sm text-muted">{review.comment}</p>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mb-8 text-sm text-zinc-500">No reviews yet — be the first to share your experience.</p>
+        <p className="mb-8 text-sm text-muted">No reviews yet — be the first to share your experience.</p>
       )}
 
       {justSubmitted ? (
-        <p className="mb-4 rounded-md border border-zinc-200 p-3 text-sm dark:border-zinc-800">
+        <p className="mb-4 border border-border p-3 text-sm">
           Thanks for your review! It&apos;ll appear here once our team approves it.
         </p>
       ) : null}
 
       <div className="max-w-lg">
-        <h3 className="mb-3 text-lg font-semibold">Write a Review</h3>
+        <h3 className="mb-3 font-serif text-lg">Write a review</h3>
         <form action={createReview} className="flex flex-col gap-4">
           <input type="hidden" name="packageId" value={packageId} />
           <input type="hidden" name="packageSlug" value={packageSlug} />
@@ -91,7 +83,7 @@ export async function ReviewsSection({
             <Textarea id="comment" name="comment" rows={3} required />
           </div>
           <Button type="submit" variant="secondary" className="self-start">
-            Submit Review
+            Submit review
           </Button>
         </form>
       </div>

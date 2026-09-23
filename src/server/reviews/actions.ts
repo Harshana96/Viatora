@@ -13,6 +13,15 @@ export async function listApprovedReviews(packageId: string) {
   });
 }
 
+export async function listFeaturedReviews(take: number) {
+  return db.review.findMany({
+    where: { approved: true },
+    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+    take,
+    include: { package: { select: { name: true, slug: true } } },
+  });
+}
+
 export async function listPendingReviews() {
   return db.review.findMany({
     where: { approved: false },

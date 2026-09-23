@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { DestinationCard } from "@/components/destinations/DestinationCard";
+import { Stars } from "@/components/reviews/Stars";
 import { PackageCard } from "@/components/tours/PackageCard";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,9 +9,29 @@ import { Select } from "@/components/ui/select";
 import { monthOptions } from "@/lib/months";
 import { listPopularDestinations } from "@/server/destinations/actions";
 import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
+import { listFeaturedReviews } from "@/server/reviews/actions";
 import { listPublishedPackages } from "@/server/tours/actions";
 
 export const dynamic = "force-dynamic";
+
+const howItWorks = [
+  {
+    title: "Discover",
+    description: "Browse three curated Sri Lanka journeys, each mapped out day by day.",
+  },
+  {
+    title: "Configure",
+    description: "Tell us your group size and when you're arriving.",
+  },
+  {
+    title: "See your price",
+    description: "One estimated total per person, calculated instantly — no back-and-forth.",
+  },
+  {
+    title: "Request the trip",
+    description: "We confirm hotels and logistics, then send a final quotation.",
+  },
+];
 
 const whySriLanka = [
   {
@@ -32,10 +53,11 @@ const whySriLanka = [
 ];
 
 export default async function HomePage() {
-  const [popularPackages, popularDestinations, groupSizeRanges] = await Promise.all([
+  const [popularPackages, popularDestinations, groupSizeRanges, featuredReviews] = await Promise.all([
     listPublishedPackages({ take: 6 }),
     listPopularDestinations(6),
     listGroupSizeRanges(),
+    listFeaturedReviews(6),
   ]);
 
   const routeStops = popularDestinations.slice(0, 5).map((destination) => destination.name);
@@ -105,6 +127,21 @@ export default async function HomePage() {
               </div>
             </div>
           ) : null}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {howItWorks.map((step, index) => (
+              <div key={step.title} className="border-t-2 border-accent pt-4">
+                <p className="text-xs text-muted">{String(index + 1).padStart(2, "0")}</p>
+                <p className="mt-2 font-medium">{step.title}</p>
+                <p className="mt-1 text-sm text-muted">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -178,6 +215,26 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Traveller reviews */}
+      {featuredReviews.length > 0 ? (
+        <section className="border-t border-border">
+          <div className="mx-auto max-w-6xl px-6 py-20">
+            <h2 className="mb-10 font-serif text-3xl">Traveller voices</h2>
+            <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {featuredReviews.map((review) => (
+                <div key={review.id} className="w-80 shrink-0 border-t border-border pt-5">
+                  <Stars rating={review.rating} />
+                  <p className="mt-3 text-sm text-foreground">&ldquo;{review.comment}&rdquo;</p>
+                  <p className="mt-4 text-xs text-muted">
+                    {review.name} · {review.package.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Call to action */}
       <section className="border-t border-border">

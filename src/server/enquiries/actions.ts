@@ -25,6 +25,7 @@ export async function createEnquiry(formData: FormData) {
   const groupSizeRangeId = String(formData.get("groupSizeRangeId") ?? "").trim();
   const arrivalMonthRaw = String(formData.get("arrivalMonth") ?? "").trim();
   const estimatedTotalRaw = String(formData.get("estimatedTotal") ?? "").trim();
+  const redirectTo = String(formData.get("redirectTo") ?? "").trim() || "/enquiry";
 
   const parsed = enquirySchema.parse({
     name: String(formData.get("name") ?? ""),
@@ -54,7 +55,7 @@ export async function createEnquiry(formData: FormData) {
     },
   });
 
-  redirect("/enquiry?success=1");
+  redirect(`${redirectTo}?success=1`);
 }
 
 export async function updateEnquiry(formData: FormData) {

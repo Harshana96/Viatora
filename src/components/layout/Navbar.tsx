@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 const navLinks = [
   { href: "/tours", label: "Tours" },
   { href: "/destinations", label: "Destinations" },
+  { href: "/about", label: "About" },
   { href: "/enquiry", label: "Enquiry" },
 ];
 
