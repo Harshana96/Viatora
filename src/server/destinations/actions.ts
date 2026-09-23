@@ -8,7 +8,10 @@ import { destinationSchema } from "@/lib/validation/destination";
 import { slugify } from "@/lib/utils/slug";
 
 export async function listDestinations() {
-  return db.destination.findMany({ orderBy: { createdAt: "desc" } });
+  return db.destination.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { images: { orderBy: { createdAt: "asc" }, take: 1 } },
+  });
 }
 
 export async function listPopularDestinations(take: number) {

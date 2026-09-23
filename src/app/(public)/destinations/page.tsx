@@ -15,7 +15,12 @@ export default async function DestinationsPage() {
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {destinations.map((destination) => (
             <li key={destination.id}>
-              <DestinationCard slug={destination.slug} name={destination.name} location={destination.location} />
+              <DestinationCard
+                slug={destination.slug}
+                name={destination.name}
+                location={destination.location}
+                imageUrl={destination.images[0]?.url}
+              />
             </li>
           ))}
         </ul>

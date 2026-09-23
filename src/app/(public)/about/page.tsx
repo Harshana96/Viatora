@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,18 @@ import { Button } from "@/components/ui/button";
 export const metadata = {
   title: "About — Viatora",
 };
+
+// Editorial photos not tied to a seeded destination -- decorative only.
+const heritagePhotos = [
+  {
+    url: "https://res.cloudinary.com/xtp3v13m/image/upload/v1790185191/viatora/timpcqddck7mwfqaqtjo.png",
+    alt: "The Ruwanwelisaya stupa in Anuradhapura",
+  },
+  {
+    url: "https://res.cloudinary.com/xtp3v13m/image/upload/v1790185193/viatora/d97g1p2pu3zpen58p1c6.png",
+    alt: "The ancient ruins of Polonnaruwa",
+  },
+];
 
 const values = [
   {
@@ -49,6 +62,24 @@ export default function AboutPage() {
                 <p className="font-medium">{value.title}</p>
                 <p className="mt-1 text-sm text-muted">{value.description}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-5xl px-6 py-14">
+          <p className="mb-6 text-xs tracking-[0.14em] text-muted uppercase">Centuries of heritage</p>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {heritagePhotos.map((photo) => (
+              <Image
+                key={photo.url}
+                src={photo.url}
+                alt={photo.alt}
+                width={700}
+                height={470}
+                className="h-64 w-full rounded-sm object-cover sm:h-80"
+              />
             ))}
           </div>
         </div>
