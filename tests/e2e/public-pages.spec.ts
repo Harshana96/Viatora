@@ -5,33 +5,34 @@ import { E2E_DESTINATION_SLUG, E2E_PACKAGE_SLUG } from "./global-setup";
 test.describe("public pages", () => {
   test("homepage loads", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Your journey, without the guesswork." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Unscripted Ceylon/ })).toBeVisible();
   });
 
-  test("homepage shows popular packages, destinations and why-Sri-Lanka sections", async ({ page }) => {
+  test("homepage shows curated journeys, waypoints and craft-of-slow-travel sections", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: "Curated journeys" })).toBeVisible();
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+    const main = page.locator("main");
+    await expect(main.getByRole("heading", { name: "Curated Expeditions" })).toBeVisible();
+    await expect(main.getByRole("heading", { name: "Sri Lanka Grand Journey" }).first()).toBeVisible();
 
-    await expect(page.getByRole("heading", { name: "Along the way" })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Test Province/ })).toBeVisible();
+    await expect(main.getByRole("heading", { name: "The Island Cartography & Waypoints" })).toBeVisible();
+    await expect(main.getByRole("heading", { name: "Sigiriya" }).first()).toBeVisible();
 
-    await expect(page.getByRole("heading", { name: "Why Sri Lanka" })).toBeVisible();
+    await expect(page.getByText("The Craft of Slow Travel")).toBeVisible();
   });
 
   test("homepage group size and arrival month form navigates to the tours page", async ({ page }) => {
     await page.goto("/");
     await page.getByLabel("Group size").selectOption({ index: 1 });
     await page.getByLabel("Arrival month").selectOption({ index: 1 });
-    await page.getByRole("button", { name: "Explore My Journey" }).click();
+    await page.getByRole("button", { name: "Explore Journeys" }).click();
 
     await expect(page).toHaveURL(/\/tours\?groupSize=.+&month=\d+/);
   });
 
   test("tours listing shows the seeded published package", async ({ page }) => {
     await page.goto("/tours");
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+    await expect(page.locator("main").getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
   });
 
   test("packages only show an estimated price once group size and arrival month are selected", async ({ page }) => {
@@ -59,7 +60,7 @@ test.describe("public pages", () => {
 
   test("destinations listing links to the destination detail page", async ({ page }) => {
     await page.goto("/destinations");
-    await page.getByRole("link", { name: /E2E Test Destination/ }).click();
+    await page.locator("main").getByRole("link", { name: /E2E Test Destination/ }).click();
     await expect(page).toHaveURL(new RegExp(`/destinations/${E2E_DESTINATION_SLUG}$`));
   });
 });
