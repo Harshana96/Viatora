@@ -44,12 +44,16 @@ test.describe("public pages", () => {
     await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
   });
 
-  test("search filter narrows the tours listing", async ({ page }) => {
-    await page.goto("/tours?query=E2E+Test+Package");
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
+  test("packages only show an estimated price once group size and arrival month are selected", async ({ page }) => {
+    await page.goto("/tours");
+    await expect(page.getByText("Select a group size and arrival month")).toBeVisible();
+    await expect(page.getByText("/ person")).toHaveCount(0);
 
-    await page.goto("/tours?query=Nonexistent+Package+Name");
-    await expect(page.getByText("No tour packages match your filters.")).toBeVisible();
+    await page.getByLabel("Group size").selectOption({ index: 1 });
+    await page.getByLabel("Arrival month").selectOption({ index: 1 });
+    await page.getByRole("button", { name: "Apply" }).click();
+
+    await expect(page.getByText("/ person").first()).toBeVisible();
   });
 
   test("package detail page renders", async ({ page }) => {

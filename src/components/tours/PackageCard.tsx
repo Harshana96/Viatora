@@ -1,17 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { formatCurrency } from "@/lib/utils";
+
 type Props = {
   slug: string;
   name: string;
   durationDays: number;
   destinationName?: string | null;
   coverImageUrl?: string | null;
+  /** Estimated total per person for the selected group size + arrival month. Omit/null to hide the price. */
+  pricePerPerson?: number | null;
   /** Optional querystring (e.g. "groupSize=x&month=6") carried forward so the package page can price it immediately. */
   query?: string;
 };
 
-export function PackageCard({ slug, name, durationDays, destinationName, coverImageUrl, query }: Props) {
+export function PackageCard({
+  slug,
+  name,
+  durationDays,
+  destinationName,
+  coverImageUrl,
+  pricePerPerson,
+  query,
+}: Props) {
   return (
     <Link
       href={query ? `/tours/${slug}?${query}` : `/tours/${slug}`}
@@ -26,6 +38,11 @@ export function PackageCard({ slug, name, durationDays, destinationName, coverIm
           {destinationName ? ` · ${destinationName}` : ""}
         </p>
         <p className="mt-1 text-lg font-semibold">{name}</p>
+        {pricePerPerson != null ? (
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Est. {formatCurrency(pricePerPerson)} / person
+          </p>
+        ) : null}
       </div>
     </Link>
   );
