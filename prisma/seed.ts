@@ -2,6 +2,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Editorial photography uploaded to Cloudinary for the seed destinations/places/packages.
+// Served through f_auto,q_auto,w_1200 so Next's image optimizer doesn't choke on multi-MB sources.
+const CLOUDINARY_BASE = "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1200";
+const seedPhotos = {
+  sigiriyaRock: { url: `${CLOUDINARY_BASE}/v1790185175/viatora/y1iphqaonuvr7wdnbhf6.png`, publicId: "viatora/y1iphqaonuvr7wdnbhf6" },
+  ellaTrain: { url: `${CLOUDINARY_BASE}/v1790185178/viatora/pqmwakdwvhl6g2ot5yk8.png`, publicId: "viatora/pqmwakdwvhl6g2ot5yk8" },
+  nuwaraEliyaCabin: { url: `${CLOUDINARY_BASE}/v1790185181/viatora/ter0xqdv0mds5ql5p2lf.png`, publicId: "viatora/ter0xqdv0mds5ql5p2lf" },
+  mirissaBeach: { url: `${CLOUDINARY_BASE}/v1790185183/viatora/pcpepbfir6fxo2iurevg.png`, publicId: "viatora/pcpepbfir6fxo2iurevg" },
+  dambullaCaveTemple: { url: `${CLOUDINARY_BASE}/v1790185186/viatora/ya58jtyz2inzvunumwfb.png`, publicId: "viatora/ya58jtyz2inzvunumwfb" },
+  infinityPool: { url: `${CLOUDINARY_BASE}/v1790185189/viatora/cmpjvsfhbeio6btx3lyo.png`, publicId: "viatora/cmpjvsfhbeio6btx3lyo" },
+} as const;
+
 async function seedDestination(data: {
   name: string;
   slug: string;
@@ -42,6 +54,26 @@ async function seedHotel(data: { name: string; location: string; rating: number 
   return prisma.hotel.create({ data });
 }
 
+type SeedPhoto = { url: string; publicId: string };
+
+async function seedDestinationImage(destinationId: string, photo: SeedPhoto, alt: string) {
+  const existing = await prisma.image.findFirst({ where: { destinationId } });
+  const data = { url: photo.url, publicId: photo.publicId, alt, destinationId };
+  if (existing) {
+    return prisma.image.update({ where: { id: existing.id }, data });
+  }
+  return prisma.image.create({ data });
+}
+
+async function seedPlaceImage(placeId: string, photo: SeedPhoto, alt: string) {
+  const existing = await prisma.image.findFirst({ where: { placeId } });
+  const data = { url: photo.url, publicId: photo.publicId, alt, placeId };
+  if (existing) {
+    return prisma.image.update({ where: { id: existing.id }, data });
+  }
+  return prisma.image.create({ data });
+}
+
 async function seedGroupSizeRange(data: { label: string; minSize: number; maxSize: number | null; order: number }) {
   const existing = await prisma.groupSizeRange.findFirst({ where: { label: data.label } });
   if (existing) {
@@ -72,6 +104,8 @@ async function seedPackage(
   data: {
     name: string;
     slug: string;
+    coverImageUrl?: string;
+    coverImagePublicId?: string;
     durationDays: number;
     startingPrice: number;
     travelType: "ADVENTURE" | "CULTURAL" | "BEACH" | "WILDLIFE" | "HONEYMOON" | "FAMILY" | "WELLNESS";
@@ -261,6 +295,8 @@ async function main() {
     longitude: 80.6517,
     destinationId: sigiriya.id,
   });
+
+  await seedPlaceImage(dambullaCaveTemple.id, seedPhotos.dambullaCaveTemple, "Inside the historic Dambulla cave temple");
 
   const cinnamonCitadel = await seedHotel({ name: "Cinnamon Citadel Kandy", location: "Kandy", rating: 4.3 });
   const jetwingLighthouse = await seedHotel({ name: "Jetwing Lighthouse", location: "Galle", rating: 4.6 });
@@ -469,6 +505,11 @@ async function main() {
     longitude: 80.4589,
   });
 
+  await seedDestinationImage(sigiriya.id, seedPhotos.sigiriyaRock, "Sigiriya Rock Fortress at sunrise");
+  await seedDestinationImage(ella.id, seedPhotos.ellaTrain, "The blue train crossing Nine Arches Bridge near Ella");
+  await seedDestinationImage(nuwaraEliya.id, seedPhotos.nuwaraEliyaCabin, "A wooden cabin in the misty hills above Nuwara Eliya");
+  await seedDestinationImage(mirissa.id, seedPhotos.mirissaBeach, "A secluded palm-lined beach in Mirissa");
+
   const hortonPlains = await seedPlace({
     name: "Horton Plains National Park",
     slug: "horton-plains-national-park",
@@ -571,6 +612,8 @@ async function main() {
     {
       name: "Sri Lanka Grand Journey",
       slug: "sri-lanka-grand-journey",
+      coverImageUrl: seedPhotos.infinityPool.url,
+      coverImagePublicId: seedPhotos.infinityPool.publicId,
       durationDays: 9,
       startingPrice: 820,
       travelType: "CULTURAL",
@@ -605,6 +648,8 @@ async function main() {
     {
       name: "Sri Lanka Explorer",
       slug: "sri-lanka-explorer",
+      coverImageUrl: seedPhotos.ellaTrain.url,
+      coverImagePublicId: seedPhotos.ellaTrain.publicId,
       durationDays: 8,
       startingPrice: 650,
       travelType: "ADVENTURE",
@@ -637,6 +682,8 @@ async function main() {
     {
       name: "Sri Lanka Highlights",
       slug: "sri-lanka-highlights",
+      coverImageUrl: seedPhotos.nuwaraEliyaCabin.url,
+      coverImagePublicId: seedPhotos.nuwaraEliyaCabin.publicId,
       durationDays: 7,
       startingPrice: 550,
       travelType: "CULTURAL",
