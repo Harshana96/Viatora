@@ -54,23 +54,23 @@ export default async function TourPackagePage({
           />
         ) : null}
         <header>
-          <p className="text-sm font-medium text-stone-500">
+          <p className="text-sm font-medium text-zinc-500">
             {tourPackage.durationDays} days
             {tourPackage.destination ? ` · ${tourPackage.destination.name}` : ""}
           </p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">{tourPackage.name}</h1>
           {tourPackage.startingPrice ? (
-            <p className="mt-2 text-lg text-stone-700 dark:text-stone-300">
+            <p className="mt-2 text-lg text-zinc-700 dark:text-zinc-300">
               From {formatCurrency(Number(tourPackage.startingPrice))}
             </p>
           ) : null}
-          <p className="mt-4 max-w-2xl text-stone-600 dark:text-stone-400">{tourPackage.description}</p>
+          <p className="mt-4 max-w-2xl text-zinc-600 dark:text-zinc-400">{tourPackage.description}</p>
         </header>
 
         {tourPackage.highlights.length > 0 ? (
           <section>
             <h2 className="mb-2 text-lg font-semibold">Highlights</h2>
-            <ul className="list-disc pl-5 text-stone-600 dark:text-stone-400">
+            <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
               {tourPackage.highlights.map((highlight, index) => (
                 <li key={`${index}-${highlight}`}>{highlight}</li>
               ))}
@@ -106,7 +106,7 @@ export default async function TourPackagePage({
             {tourPackage.included.length > 0 ? (
               <div>
                 <h2 className="mb-2 text-lg font-semibold">What&apos;s included</h2>
-                <ul className="list-disc pl-5 text-stone-600 dark:text-stone-400">
+                <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
                   {tourPackage.included.map((item, index) => (
                     <li key={`${index}-${item}`}>{item}</li>
                   ))}
@@ -116,7 +116,7 @@ export default async function TourPackagePage({
             {tourPackage.excluded.length > 0 ? (
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Not included</h2>
-                <ul className="list-disc pl-5 text-stone-600 dark:text-stone-400">
+                <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
                   {tourPackage.excluded.map((item, index) => (
                     <li key={`${index}-${item}`}>{item}</li>
                   ))}
@@ -129,7 +129,7 @@ export default async function TourPackagePage({
         <div>
           <Link
             href={`/enquiry?package=${tourPackage.id}`}
-            className="inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-foreground shadow-sm shadow-accent/20 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:scale-[0.98]"
+            className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
             Enquire about this tour
           </Link>
