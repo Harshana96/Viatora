@@ -8,7 +8,7 @@ test.describe("public pages", () => {
     await expect(page.getByRole("heading", { name: "Your Sri Lanka Journey, Planned Simply." })).toBeVisible();
   });
 
-  test("homepage shows popular packages, destinations and travel categories", async ({ page }) => {
+  test("homepage shows popular packages, destinations and why-Sri-Lanka sections", async ({ page }) => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { name: "Popular Tour Packages" })).toBeVisible();
@@ -17,26 +17,16 @@ test.describe("public pages", () => {
     await expect(page.getByRole("heading", { name: "Popular Destinations" })).toBeVisible();
     await expect(page.getByRole("link", { name: /Test Province/ })).toBeVisible();
 
-    await expect(page.getByRole("heading", { name: "Travel Categories" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Adventure" })).toBeVisible();
-
     await expect(page.getByRole("heading", { name: "Why Sri Lanka" })).toBeVisible();
   });
 
-  test("homepage search box navigates to filtered tours listing", async ({ page }) => {
+  test("homepage group size and arrival month form navigates to the tours page", async ({ page }) => {
     await page.goto("/");
-    await page.getByPlaceholder("Search tours, e.g. 'hill country'").fill("E2E Test Package");
-    await page.getByRole("button", { name: "Search" }).click();
+    await page.getByLabel("Group size").selectOption({ index: 1 });
+    await page.getByLabel("Arrival month").selectOption({ index: 1 });
+    await page.getByRole("button", { name: "Explore My Journey" }).click();
 
-    await expect(page).toHaveURL(/\/tours\?query=/);
-    await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
-  });
-
-  test("homepage travel category link filters tours by type", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("link", { name: "Adventure" }).click();
-
-    await expect(page).toHaveURL(/\/tours\?travelType=ADVENTURE/);
+    await expect(page).toHaveURL(/\/tours\?groupSize=.+&month=\d+/);
   });
 
   test("tours listing shows the seeded published package", async ({ page }) => {

@@ -3,11 +3,9 @@ import Link from "next/link";
 import { DestinationCard } from "@/components/destinations/DestinationCard";
 import { PackageCard } from "@/components/tours/PackageCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { monthOptions } from "@/lib/months";
-import { travelTypeLabels } from "@/lib/travel-type";
 import { listPopularDestinations } from "@/server/destinations/actions";
 import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
 import { listPublishedPackages } from "@/server/tours/actions";
@@ -88,17 +86,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Search / discover tours */}
-      <section className="border-t border-zinc-200 px-6 py-12 dark:border-zinc-800">
-        <div className="mx-auto max-w-xl">
-          <h2 className="text-center text-lg font-semibold">Find your next trip</h2>
-          <form action="/tours" className="mt-4 flex gap-2">
-            <Input name="query" placeholder="Search tours, e.g. 'hill country'" className="flex-1" />
-            <Button type="submit">Search</Button>
-          </form>
-        </div>
-      </section>
-
       {/* Popular tour packages */}
       {popularPackages.length > 0 ? (
         <section className="border-t border-zinc-200 px-6 py-12 dark:border-zinc-800">
@@ -151,25 +138,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-
-      {/* Travel categories */}
-      <section className="border-t border-zinc-200 px-6 py-12 dark:border-zinc-800">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="mb-6 text-xl font-semibold">Travel Categories</h2>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {Object.entries(travelTypeLabels).map(([value, label]) => (
-              <li key={value}>
-                <Link
-                  href={`/tours?travelType=${value}`}
-                  className="flex h-20 items-center justify-center rounded-lg border border-zinc-200 text-center text-sm font-medium transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       {/* Why Sri Lanka */}
       <section className="border-t border-zinc-200 px-6 py-12 dark:border-zinc-800">
