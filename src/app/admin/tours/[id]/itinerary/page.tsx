@@ -29,9 +29,14 @@ export default async function ItineraryBuilderPage({
           <h1 className="text-2xl font-semibold">Itinerary: {tourPackage.name}</h1>
           <p className="text-sm text-zinc-500">{tourPackage.durationDays} day package</p>
         </div>
-        <Link href={`/admin/tours/${id}/itinerary/days/new`}>
-          <Button>Add day</Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href={`/admin/tours/${id}/pricing`} className="text-sm font-medium text-zinc-600 hover:underline dark:text-zinc-400">
+            Pricing
+          </Link>
+          <Link href={`/admin/tours/${id}/itinerary/days/new`}>
+            <Button>Add day</Button>
+          </Link>
+        </div>
       </div>
 
       {days.length === 0 ? (

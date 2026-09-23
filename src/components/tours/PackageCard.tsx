@@ -7,12 +7,14 @@ type Props = {
   durationDays: number;
   destinationName?: string | null;
   coverImageUrl?: string | null;
+  /** Optional querystring (e.g. "groupSize=x&month=6") carried forward so the package page can price it immediately. */
+  query?: string;
 };
 
-export function PackageCard({ slug, name, durationDays, destinationName, coverImageUrl }: Props) {
+export function PackageCard({ slug, name, durationDays, destinationName, coverImageUrl, query }: Props) {
   return (
     <Link
-      href={`/tours/${slug}`}
+      href={query ? `/tours/${slug}?${query}` : `/tours/${slug}`}
       className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
     >
       {coverImageUrl ? (

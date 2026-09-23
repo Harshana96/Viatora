@@ -6,8 +6,11 @@ export const enquirySchema = z.object({
   email: z.string().email("Enter a valid email"),
   phone: z.string().min(6, "Enter a valid phone/WhatsApp number"),
   preferredDate: z.coerce.date().optional(),
+  arrivalMonth: z.coerce.number().int().min(1).max(12).optional(),
   travellersCount: z.coerce.number().int().min(1),
+  groupSizeRangeId: z.string().optional().or(z.literal("")),
   packageId: z.string().optional().or(z.literal("")),
+  estimatedTotal: z.coerce.number().min(0).optional(),
   message: z.string().optional().or(z.literal("")),
 });
 

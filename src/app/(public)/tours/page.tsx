@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { monthOptions } from "@/lib/months";
 import { travelTypeLabels } from "@/lib/travel-type";
 import { listDestinationOptions } from "@/server/destinations/actions";
+import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
 import type { BudgetBucket, DurationBucket } from "@/server/tours/actions";
 import { listPublishedPackages } from "@/server/tours/actions";
 
@@ -44,15 +46,22 @@ type SearchParams = {
   travelType?: string;
   duration?: string;
   budget?: string;
+  groupSize?: string;
+  month?: string;
 };
 
 export default async function ToursPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams;
-  const destinations = await listDestinationOptions();
+  const [destinations, groupSizeRanges] = await Promise.all([listDestinationOptions(), listGroupSizeRanges()]);
 
   const hasFilters = Boolean(
     params.query || params.destination || params.travelType || params.duration || params.budget,
   );
+
+  const journeyParams = new URLSearchParams();
+  if (params.groupSize) journeyParams.set("groupSize", params.groupSize);
+  if (params.month) journeyParams.set("month", params.month);
+  const journeyQuery = journeyParams.toString();
 
   const packages = await listPublishedPackages({
     query: params.query,
@@ -115,6 +124,28 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
             ))}
           </Select>
         </div>
+        <div>
+          <Label htmlFor="groupSize">Group size</Label>
+          <Select id="groupSize" name="groupSize" defaultValue={params.groupSize ?? ""}>
+            <option value="">Any group size</option>
+            {groupSizeRanges.map((range) => (
+              <option key={range.id} value={range.id}>
+                {range.label}
+              </option>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="month">Arrival month</Label>
+          <Select id="month" name="month" defaultValue={params.month ?? ""}>
+            <option value="">Any month</option>
+            {monthOptions.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </Select>
+        </div>
         <div className="flex items-end gap-4 lg:col-span-5">
           <Button type="submit">Apply filters</Button>
           {hasFilters ? (
@@ -124,6 +155,12 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
           ) : null}
         </div>
       </form>
+
+      {params.groupSize || params.month ? (
+        <p className="mt-4 text-sm text-zinc-500">
+          Showing packages you can price for your group and arrival month once you open a journey.
+        </p>
+      ) : null}
 
       {packages.length === 0 ? (
         <p className="mt-8 text-zinc-600 dark:text-zinc-400">No tour packages match your filters.</p>
@@ -137,6 +174,7 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
                 durationDays={tourPackage.durationDays}
                 destinationName={tourPackage.destination?.name}
                 coverImageUrl={tourPackage.coverImageUrl}
+                query={journeyQuery}
               />
             </li>
           ))}

@@ -41,7 +41,7 @@ export function DayForm({ action, packageId, day, nextDayNumber, hotels }: Props
       </div>
       <div>
         <div className="flex items-center justify-between">
-          <Label htmlFor="hotelId">Hotel</Label>
+          <Label htmlFor="hotelId">Hotel (primary option)</Label>
           <Link href="/admin/hotels/new" className="text-xs font-medium text-zinc-600 hover:underline dark:text-zinc-400">
             Manage hotels
           </Link>
@@ -54,6 +54,35 @@ export function DayForm({ action, packageId, day, nextDayNumber, hotels }: Props
             </option>
           ))}
         </Select>
+      </div>
+      <div>
+        <Label>Alternative hotel options</Label>
+        <p className="mb-2 text-xs text-zinc-500">
+          Shown to travellers as other choices for this stay; availability is confirmed after enquiry.
+        </p>
+        <div className="flex flex-col gap-2">
+          {hotels.map((hotel) => (
+            <label key={hotel.id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="alternativeHotelIds"
+                value={hotel.id}
+                defaultChecked={day?.alternativeHotelIds?.includes(hotel.id) ?? false}
+              />
+              {hotel.name}
+            </label>
+          ))}
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="optionalActivities">Optional / available activities (one per line)</Label>
+        <Textarea
+          id="optionalActivities"
+          name="optionalActivities"
+          defaultValue={day?.optionalActivities?.join("\n") ?? ""}
+          rows={3}
+          placeholder="Whale watching&#10;Surfing lesson"
+        />
       </div>
       <Button type="submit">{day ? "Save changes" : "Add day"}</Button>
     </form>

@@ -78,9 +78,9 @@ model Place {
 }
 
 model TourPackage {
-  id                 String       @id @default(cuid())
+  id                 String        @id @default(cuid())
   name               String
-  slug               String       @unique
+  slug               String        @unique
   coverImageUrl      String?
   coverImagePublicId String?
   durationDays       Int
@@ -90,28 +90,32 @@ model TourPackage {
   highlights         String[]
   included           String[]
   excluded           String[]
-  published          Boolean      @default(false)
+  importantInfo      String[]      @default([])
+  published          Boolean       @default(false)
   destinationId      String?
-  destination        Destination? @relation(fields: [destinationId], references: [id])
+  destination        Destination?  @relation(fields: [destinationId], references: [id])
   days               TourDay[]
   images             Image[]
   enquiries          Enquiry[]
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  pricingRules       PricingRule[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 }
 
 model TourDay {
-  id          String         @id @default(cuid())
-  packageId   String
-  package     TourPackage    @relation(fields: [packageId], references: [id])
-  dayNumber   Int
-  title       String?
-  description String?
-  hotelId     String?
-  hotel       Hotel?         @relation(fields: [hotelId], references: [id])
-  places      TourDayPlace[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id                  String         @id @default(cuid())
+  packageId           String
+  package             TourPackage    @relation(fields: [packageId], references: [id])
+  dayNumber           Int
+  title               String?
+  description         String?
+  hotelId             String?
+  hotel               Hotel?         @relation(fields: [hotelId], references: [id])
+  alternativeHotelIds String[]       @default([])
+  optionalActivities  String[]       @default([])
+  places              TourDayPlace[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 
   @@unique([packageId, dayNumber])
 }
@@ -154,17 +158,58 @@ model Image {
 }
 
 model Enquiry {
-  id              String        @id @default(cuid())
-  name            String
-  email           String
-  phone           String
-  preferredDate   DateTime?
-  travellersCount Int
-  packageId       String?
-  package         TourPackage?  @relation(fields: [packageId], references: [id])
-  message         String?
-  status          EnquiryStatus @default(NEW)
-  internalNotes   String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id               String          @id @default(cuid())
+  name             String
+  email            String
+  phone            String
+  preferredDate    DateTime?
+  arrivalMonth     Int?
+  travellersCount  Int
+  groupSizeRangeId String?
+  groupSizeRange   GroupSizeRange? @relation(fields: [groupSizeRangeId], references: [id])
+  packageId        String?
+  package          TourPackage?    @relation(fields: [packageId], references: [id])
+  estimatedTotal   Decimal?
+  message          String?
+  status           EnquiryStatus   @default(NEW)
+  internalNotes    String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model GroupSizeRange {
+  id           String        @id @default(cuid())
+  label        String
+  minSize      Int
+  maxSize      Int?
+  order        Int           @default(0)
+  pricingRules PricingRule[]
+  enquiries    Enquiry[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Season {
+  id           String        @id @default(cuid())
+  name         String
+  months       Int[]
+  order        Int           @default(0)
+  pricingRules PricingRule[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model PricingRule {
+  id               String         @id @default(cuid())
+  packageId        String
+  package          TourPackage    @relation(fields: [packageId], references: [id])
+  groupSizeRangeId String
+  groupSizeRange   GroupSizeRange @relation(fields: [groupSizeRangeId], references: [id])
+  seasonId         String
+  season           Season         @relation(fields: [seasonId], references: [id])
+  pricePerPerson   Decimal
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([packageId, groupSizeRangeId, seasonId])
 }
