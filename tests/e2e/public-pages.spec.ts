@@ -5,7 +5,7 @@ import { E2E_DESTINATION_SLUG, E2E_PACKAGE_SLUG } from "./global-setup";
 test.describe("public pages", () => {
   test("homepage loads", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Viatora" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your Sri Lanka Journey, Planned Simply." })).toBeVisible();
   });
 
   test("homepage shows popular packages, destinations and travel categories", async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe("public pages", () => {
   test("package detail page renders", async ({ page }) => {
     await page.goto(`/tours/${E2E_PACKAGE_SLUG}`);
     await expect(page.getByRole("heading", { name: "E2E Test Package" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Enquire about this tour" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Request This Trip" })).toBeVisible();
   });
 
   test("destination detail page renders", async ({ page }) => {
