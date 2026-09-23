@@ -100,7 +100,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
         el.type = "button";
         el.setAttribute("aria-label", `Day ${point.dayNumber}: ${point.label}`);
         el.className =
-          "flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-stone-900 text-xs font-semibold text-white shadow-md transition-transform dark:bg-stone-50 dark:text-stone-900";
+          "flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-semibold text-white shadow-md transition-transform dark:bg-zinc-50 dark:text-zinc-900";
         el.textContent = String(point.dayNumber);
         el.addEventListener("click", () => onSelectDay(point.dayId));
 
@@ -143,7 +143,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
 
   if (!MAPBOX_PUBLIC_TOKEN) {
     return (
-      <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-stone-300 bg-stone-50 p-6 text-center text-sm text-stone-500 dark:border-stone-700 dark:bg-stone-900">
+      <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900">
         <p className="font-medium">Interactive map unavailable</p>
         <p>Set NEXT_PUBLIC_MAPBOX_TOKEN to enable the journey map.</p>
       </div>
@@ -152,7 +152,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
 
   if (points.length === 0) {
     return (
-      <div className="flex h-full min-h-[320px] items-center justify-center rounded-lg border border-dashed border-stone-300 p-6 text-center text-sm text-stone-500 dark:border-stone-700">
+      <div className="flex h-full min-h-[320px] items-center justify-center rounded-lg border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
         No locations added to this itinerary yet.
       </div>
     );

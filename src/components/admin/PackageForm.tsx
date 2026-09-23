@@ -104,7 +104,7 @@ export function PackageForm({ action, tourPackage, destinations }: Props) {
           name="published"
           type="checkbox"
           defaultChecked={tourPackage?.published}
-          className="h-4 w-4 rounded border-stone-300"
+          className="h-4 w-4 rounded border-zinc-300"
         />
         <Label htmlFor="published" className="mb-0">
           Published

@@ -21,7 +21,7 @@ export default async function EnquiryPage({
       <main className="flex-1 px-6 py-16">
         <div className="mx-auto max-w-lg text-center">
           <h1 className="text-2xl font-semibold">Thank you!</h1>
-          <p className="mt-2 text-stone-600 dark:text-stone-400">
+          <p className="mt-2 text-zinc-600 dark:text-zinc-400">
             We&apos;ve received your enquiry and will get back to you shortly.
           </p>
         </div>
@@ -33,7 +33,7 @@ export default async function EnquiryPage({
     <main className="flex-1 px-6 py-16">
       <div className="mx-auto max-w-lg">
         <h1 className="text-2xl font-semibold">Enquire about a tour</h1>
-        <p className="mt-2 text-stone-600 dark:text-stone-400">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Tell us a bit about your trip and we&apos;ll be in touch. No payment required.
         </p>
         <form action={createEnquiry} className="mt-6 flex flex-col gap-4">

@@ -42,7 +42,7 @@ export function DayForm({ action, packageId, day, nextDayNumber, hotels }: Props
       <div>
         <div className="flex items-center justify-between">
           <Label htmlFor="hotelId">Hotel</Label>
-          <Link href="/admin/hotels/new" className="text-xs font-medium text-stone-600 hover:underline dark:text-stone-400">
+          <Link href="/admin/hotels/new" className="text-xs font-medium text-zinc-600 hover:underline dark:text-zinc-400">
             Manage hotels
           </Link>
         </div>

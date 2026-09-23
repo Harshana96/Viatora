@@ -17,11 +17,11 @@ export default async function AdminHotelsPage() {
         </Link>
       </div>
       {hotels.length === 0 ? (
-        <p className="text-stone-600 dark:text-stone-400">No hotels yet.</p>
+        <p className="text-zinc-600 dark:text-zinc-400">No hotels yet.</p>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-stone-200 dark:border-stone-800">
+            <tr className="border-b border-zinc-200 dark:border-zinc-800">
               <th className="py-2">Name</th>
               <th className="py-2">Location</th>
               <th className="py-2">Rating</th>
@@ -29,10 +29,10 @@ export default async function AdminHotelsPage() {
           </thead>
           <tbody>
             {hotels.map((hotel) => (
-              <tr key={hotel.id} className="border-b border-stone-100 dark:border-stone-900">
+              <tr key={hotel.id} className="border-b border-zinc-100 dark:border-zinc-900">
                 <td className="py-2">{hotel.name}</td>
                 <td className="py-2">{hotel.location}</td>
-                <td className="py-2 text-stone-500">{hotel.rating ?? "—"}</td>
+                <td className="py-2 text-zinc-500">{hotel.rating ?? "—"}</td>
               </tr>
             ))}
           </tbody>

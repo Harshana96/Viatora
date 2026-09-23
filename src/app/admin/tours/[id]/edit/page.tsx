@@ -39,7 +39,7 @@ export default async function EditPackagePage({
             className="mb-3 h-40 w-full max-w-xs rounded-md object-cover"
           />
         ) : (
-          <p className="mb-3 text-sm text-stone-500">No cover image yet.</p>
+          <p className="mb-3 text-sm text-zinc-500">No cover image yet.</p>
         )}
         <form action={uploadPackageCoverImage} encType="multipart/form-data" className="flex items-end gap-3">
           <input type="hidden" name="id" value={tourPackage.id} />
