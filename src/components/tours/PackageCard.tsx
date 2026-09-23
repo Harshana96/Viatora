@@ -27,23 +27,27 @@ export function PackageCard({
   return (
     <Link
       href={query ? `/tours/${slug}?${query}` : `/tours/${slug}`}
-      className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+      className="group block border-t border-border pt-5 transition-colors"
     >
       {coverImageUrl ? (
-        <Image src={coverImageUrl} alt={name} width={400} height={200} className="h-36 w-full object-cover" />
+        <Image
+          src={coverImageUrl}
+          alt={name}
+          width={400}
+          height={260}
+          className="mb-4 h-44 w-full rounded-sm object-cover"
+        />
       ) : null}
-      <div className="p-4">
-        <p className="text-sm text-zinc-500">
-          {durationDays} days
-          {destinationName ? ` · ${destinationName}` : ""}
+      <p className="text-xs tracking-[0.14em] text-muted uppercase">
+        {durationDays - 1} nights / {durationDays} days
+        {destinationName ? ` · ${destinationName}` : ""}
+      </p>
+      <p className="mt-2 font-serif text-2xl leading-snug transition-colors group-hover:text-accent">{name}</p>
+      {pricePerPerson != null ? (
+        <p className="mt-3 text-sm text-muted">
+          Est. {formatCurrency(pricePerPerson)} <span className="text-muted/70">/ person</span>
         </p>
-        <p className="mt-1 text-lg font-semibold">{name}</p>
-        {pricePerPerson != null ? (
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Est. {formatCurrency(pricePerPerson)} / person
-          </p>
-        ) : null}
-      </div>
+      ) : null}
     </Link>
   );
 }
