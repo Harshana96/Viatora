@@ -10,17 +10,12 @@ type Props = {
 
 export function DestinationCard({ slug, name, location, imageUrl }: Props) {
   return (
-    <Link
-      href={`/destinations/${slug}`}
-      className="block overflow-hidden rounded-lg border border-zinc-200 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
-    >
+    <Link href={`/destinations/${slug}`} className="group block border-t border-border pt-5 transition-colors">
       {imageUrl ? (
-        <Image src={imageUrl} alt={name} width={400} height={200} className="h-36 w-full object-cover" />
+        <Image src={imageUrl} alt={name} width={400} height={260} className="mb-4 h-44 w-full rounded-sm object-cover" />
       ) : null}
-      <div className="p-4">
-        <p className="text-sm text-zinc-500">{location}</p>
-        <p className="mt-1 text-lg font-semibold">{name}</p>
-      </div>
+      <p className="text-xs tracking-[0.14em] text-muted uppercase">{location}</p>
+      <p className="mt-2 font-serif text-2xl leading-snug transition-colors group-hover:text-accent">{name}</p>
     </Link>
   );
 }

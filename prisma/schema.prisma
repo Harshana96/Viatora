@@ -98,6 +98,7 @@ model TourPackage {
   images             Image[]
   enquiries          Enquiry[]
   pricingRules       PricingRule[]
+  reviews            Review[]
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 }
@@ -212,4 +213,17 @@ model PricingRule {
   updatedAt        DateTime       @updatedAt
 
   @@unique([packageId, groupSizeRangeId, seasonId])
+}
+
+model Review {
+  id        String      @id @default(cuid())
+  packageId String
+  package   TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  rating    Int
+  comment   String
+  approved  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }

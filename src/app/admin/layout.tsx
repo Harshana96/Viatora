@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <Link href="/admin/group-sizes">Group Sizes</Link>
             <Link href="/admin/seasons">Seasons</Link>
             <Link href="/admin/enquiries">Enquiries</Link>
+            <Link href="/admin/reviews">Reviews</Link>
           </nav>
           <form
             action={async () => {

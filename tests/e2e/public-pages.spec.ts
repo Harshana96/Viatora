@@ -5,16 +5,16 @@ import { E2E_DESTINATION_SLUG, E2E_PACKAGE_SLUG } from "./global-setup";
 test.describe("public pages", () => {
   test("homepage loads", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Your Sri Lanka Journey, Planned Simply." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your journey, without the guesswork." })).toBeVisible();
   });
 
   test("homepage shows popular packages, destinations and why-Sri-Lanka sections", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: "Popular Tour Packages" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Curated journeys" })).toBeVisible();
     await expect(page.getByRole("link", { name: /E2E Test Package/ })).toBeVisible();
 
-    await expect(page.getByRole("heading", { name: "Popular Destinations" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Along the way" })).toBeVisible();
     await expect(page.getByRole("link", { name: /Test Province/ })).toBeVisible();
 
     await expect(page.getByRole("heading", { name: "Why Sri Lanka" })).toBeVisible();

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { siteConfig } from "@/config/site";
 
 const navLinks = [
   { href: "/tours", label: "Tours" },
   { href: "/destinations", label: "Destinations" },
+  { href: "/about", label: "About" },
   { href: "/enquiry", label: "Enquiry" },
 ];
 
@@ -15,39 +17,47 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="border-b border-zinc-200 dark:border-zinc-800">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight" onClick={() => setIsOpen(false)}>
+    <header className="border-b border-border">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <Link
+          href="/"
+          className="font-serif text-xl tracking-tight"
+          onClick={() => setIsOpen(false)}
+        >
           {siteConfig.name}
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium sm:flex">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-6">
+          <nav className="hidden items-center gap-8 text-sm sm:flex">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="text-muted transition-colors hover:text-foreground">
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-        <button
-          type="button"
-          onClick={() => setIsOpen((open) => !open)}
-          aria-label="Toggle menu"
-          aria-expanded={isOpen}
-          className="text-sm font-medium sm:hidden"
-        >
-          {isOpen ? "Close" : "Menu"}
-        </button>
+          <ThemeToggle />
+
+          <button
+            type="button"
+            onClick={() => setIsOpen((open) => !open)}
+            aria-label="Toggle menu"
+            aria-expanded={isOpen}
+            className="text-sm sm:hidden"
+          >
+            {isOpen ? "Close" : "Menu"}
+          </button>
+        </div>
       </div>
 
       {isOpen ? (
-        <nav className="flex flex-col gap-1 border-t border-zinc-200 px-6 py-3 text-sm font-medium sm:hidden dark:border-zinc-800">
+        <nav className="flex flex-col gap-1 border-t border-border px-6 py-3 text-sm sm:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="py-2 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              className="py-2 text-muted transition-colors hover:text-foreground"
             >
               {link.label}
             </Link>
