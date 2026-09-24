@@ -12,7 +12,7 @@ test.describe("enquiry submission", () => {
     await page.getByLabel("Number of travellers").fill("2");
     await page.getByLabel("Message").fill("This is an automated end-to-end test enquiry.");
 
-    await page.getByRole("button", { name: "Send enquiry" }).click();
+    await page.getByRole("button", { name: "Submit Itinerary Request" }).click();
 
     await expect(page).toHaveURL(/\/enquiry\?success=1/);
     await expect(page.getByRole("heading", { name: "Thank you!" })).toBeVisible();
@@ -23,6 +23,6 @@ test.describe("enquiry submission", () => {
     await page.getByRole("link", { name: "Request This Trip" }).click();
 
     await expect(page).toHaveURL(/\/enquiry\?package=/);
-    await expect(page.getByLabel("Package")).toHaveValue(/.+/);
+    await expect(page.getByLabel("Journey")).toHaveValue(/.+/);
   });
 });

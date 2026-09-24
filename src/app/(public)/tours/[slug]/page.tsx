@@ -85,50 +85,57 @@ export default async function TourPackagePage({
   if (estimate) enquiryParams.set("estimatedTotal", String(estimate.pricePerPerson));
 
   return (
-    <main className="flex-1 px-6 py-12">
-      <div className="mx-auto flex max-w-5xl flex-col gap-10">
+    <main className="flex-1">
+      <div className="mx-auto max-w-5xl space-y-16 px-4 pt-8 pb-24 sm:px-6 sm:pt-14 lg:px-8">
         {tourPackage.coverImageUrl ? (
-          <Image
-            src={tourPackage.coverImageUrl}
-            alt={tourPackage.name}
-            width={1200}
-            height={480}
-            className="h-64 w-full rounded-lg object-cover sm:h-80"
-            priority
-          />
+          <div className="relative h-72 w-full overflow-hidden bg-parchment-200 sm:h-96">
+            <Image
+              src={tourPackage.coverImageUrl}
+              alt={tourPackage.name}
+              width={1400}
+              height={600}
+              className="h-full w-full object-cover"
+              priority
+            />
+          </div>
         ) : null}
 
         {/* Hero */}
         <header>
-          <p className="text-sm font-medium text-zinc-500">
-            {tourPackage.durationDays - 1} nights / {tourPackage.durationDays} days
-            {" · "}
-            {uniqueDestinations.size} destinations
+          <p className="font-mono text-[11px] tracking-wider text-accent uppercase">
+            {tourPackage.durationDays - 1} nights / {tourPackage.durationDays} days · {uniqueDestinations.size}{" "}
+            destinations
           </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">{tourPackage.name}</h1>
-          <p className="mt-4 max-w-2xl text-zinc-600 dark:text-zinc-400">{tourPackage.description}</p>
+          <h1 className="font-editorial mt-2 text-4xl font-medium text-foreground sm:text-5xl">{tourPackage.name}</h1>
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed font-light text-muted">{tourPackage.description}</p>
         </header>
 
         {tourPackage.highlights.length > 0 ? (
           <section>
-            <h2 className="mb-2 text-lg font-semibold">Highlights</h2>
-            <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
-              {tourPackage.highlights.map((highlight, index) => (
-                <li key={`${index}-${highlight}`}>{highlight}</li>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Highlights</h2>
+            <div className="grid grid-cols-1 gap-2.5 text-sm text-foreground sm:grid-cols-2">
+              {tourPackage.highlights.map((highlight) => (
+                <div key={highlight} className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  <span>{highlight}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </section>
         ) : null}
 
         {/* Journey exploration: map + day-by-day */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold">Explore the Journey</h2>
+          <div className="mb-6 text-[11px] font-semibold tracking-[0.2em] text-accent uppercase">
+            Geographic Journal
+          </div>
+          <h2 className="font-editorial mb-6 text-2xl text-foreground sm:text-3xl">Explore the Journey</h2>
           <JourneyExplorer days={journeyDays} route={route} />
         </section>
 
         {tourPackage.images.length > 0 ? (
           <section>
-            <h2 className="mb-4 text-lg font-semibold">Gallery</h2>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Gallery</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {tourPackage.images.map((image) => (
                 <Image
@@ -137,7 +144,7 @@ export default async function TourPackagePage({
                   alt={image.alt ?? tourPackage.name}
                   width={300}
                   height={200}
-                  className="h-32 w-full rounded-md object-cover"
+                  className="h-32 w-full object-cover"
                 />
               ))}
             </div>
@@ -145,14 +152,19 @@ export default async function TourPackagePage({
         ) : null}
 
         {/* Full tour package */}
-        <section className="border-t border-zinc-200 pt-8 dark:border-zinc-800">
-          <h2 className="mb-6 text-2xl font-semibold">Full Tour Package</h2>
+        <section className="border-t border-parchment-300 pt-10">
+          <div className="mb-8 text-[11px] font-semibold tracking-[0.2em] text-accent uppercase">
+            The Full Itinerary
+          </div>
+          <h2 className="font-editorial mb-10 text-3xl text-foreground">Full Tour Package</h2>
 
           {/* Hotels */}
           {journeyDays.some((day) => day.hotelOptions.length > 0) ? (
-            <div className="mb-8">
-              <h3 className="mb-1 text-lg font-semibold">Your Accommodation Options</h3>
-              <p className="mb-4 text-sm text-zinc-500">
+            <div className="mb-10">
+              <h3 className="font-editorial mb-1 text-xl font-semibold text-foreground">
+                Your Accommodation Options
+              </h3>
+              <p className="mb-4 text-xs leading-relaxed font-light text-muted">
                 Hotel selection does not guarantee live availability. Final availability is confirmed by our
                 team after your enquiry — if your preferred hotel isn&apos;t available, we&apos;ll arrange a
                 listed alternative.
@@ -161,17 +173,17 @@ export default async function TourPackagePage({
                 {journeyDays
                   .filter((day) => day.hotelOptions.length > 0)
                   .map((day) => (
-                    <div key={day.id}>
-                      <p className="text-sm font-medium text-zinc-500">
-                        Day {day.dayNumber}
+                    <div key={day.id} className="border border-parchment-300 bg-surface p-4">
+                      <p className="font-mono text-[11px] tracking-wider text-muted uppercase">
+                        Day {String(day.dayNumber).padStart(2, "0")}
                         {day.places[0] ? ` · ${day.places[0].name}` : ""}
                       </p>
-                      <div className="mt-1 flex flex-col gap-1">
+                      <div className="mt-2 flex flex-col gap-1.5">
                         {day.hotelOptions.map((hotel, index) => (
-                          <label key={hotel.id} className="flex items-center gap-2 text-sm">
+                          <label key={hotel.id} className="flex items-center gap-2 text-sm text-foreground">
                             <input type="radio" name={`hotel-${day.id}`} defaultChecked={index === 0} />
                             {hotel.name}
-                            {hotel.rating ? <span className="text-zinc-400">· {hotel.rating}★</span> : null}
+                            {hotel.rating ? <span className="text-muted">· {hotel.rating}★</span> : null}
                           </label>
                         ))}
                       </div>
@@ -183,23 +195,23 @@ export default async function TourPackagePage({
 
           {/* Activities */}
           {includedActivities.length > 0 || optionalActivities.length > 0 ? (
-            <div className="mb-8 grid gap-6 sm:grid-cols-2">
+            <div className="mb-10 grid gap-8 sm:grid-cols-2">
               {includedActivities.length > 0 ? (
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold">Included Activities</h3>
-                  <ul className="flex flex-col gap-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    {includedActivities.map((activity, index) => (
-                      <li key={index}>✓ {activity}</li>
+                  <h3 className="font-editorial mb-2 text-xl font-semibold text-foreground">Included Activities</h3>
+                  <ul className="flex flex-col gap-1.5 text-sm text-foreground">
+                    {includedActivities.map((activity) => (
+                      <li key={activity}>✓ {activity}</li>
                     ))}
                   </ul>
                 </div>
               ) : null}
               {optionalActivities.length > 0 ? (
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold">Optional / Available</h3>
-                  <ul className="flex flex-col gap-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    {optionalActivities.map((activity, index) => (
-                      <li key={index} className="flex items-center gap-2">
+                  <h3 className="font-editorial mb-2 text-xl font-semibold text-foreground">Optional / Available</h3>
+                  <ul className="flex flex-col gap-1.5 text-sm text-muted">
+                    {optionalActivities.map((activity) => (
+                      <li key={activity} className="flex items-center gap-2">
                         <input type="checkbox" /> {activity}
                       </li>
                     ))}
@@ -211,23 +223,23 @@ export default async function TourPackagePage({
 
           {/* Includes / excludes */}
           {tourPackage.included.length > 0 || tourPackage.excluded.length > 0 ? (
-            <div className="mb-8 grid gap-6 sm:grid-cols-2">
+            <div className="mb-10 grid gap-8 sm:grid-cols-2">
               {tourPackage.included.length > 0 ? (
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold">What&apos;s included</h3>
-                  <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
-                    {tourPackage.included.map((item, index) => (
-                      <li key={`${index}-${item}`}>{item}</li>
+                  <h3 className="font-editorial mb-2 text-xl font-semibold text-foreground">What&apos;s Included</h3>
+                  <ul className="flex flex-col gap-1.5 text-sm text-muted">
+                    {tourPackage.included.map((item) => (
+                      <li key={item}>✓ {item}</li>
                     ))}
                   </ul>
                 </div>
               ) : null}
               {tourPackage.excluded.length > 0 ? (
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold">Not included</h3>
-                  <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
-                    {tourPackage.excluded.map((item, index) => (
-                      <li key={`${index}-${item}`}>{item}</li>
+                  <h3 className="font-editorial mb-2 text-xl font-semibold text-foreground">Not Included</h3>
+                  <ul className="flex flex-col gap-1.5 text-sm text-muted">
+                    {tourPackage.excluded.map((item) => (
+                      <li key={item}>· {item}</li>
                     ))}
                   </ul>
                 </div>
@@ -236,19 +248,22 @@ export default async function TourPackagePage({
           ) : null}
 
           {tourPackage.importantInfo.length > 0 ? (
-            <div className="mb-8">
-              <h3 className="mb-2 text-lg font-semibold">Important Information</h3>
-              <ul className="list-disc pl-5 text-sm text-zinc-600 dark:text-zinc-400">
-                {tourPackage.importantInfo.map((item, index) => (
-                  <li key={`${index}-${item}`}>{item}</li>
+            <div className="mb-10">
+              <h3 className="font-editorial mb-2 text-xl font-semibold text-foreground">Important Information</h3>
+              <ul className="flex flex-col gap-1.5 text-xs leading-relaxed font-light text-muted">
+                {tourPackage.importantInfo.map((item) => (
+                  <li key={item}>· {item}</li>
                 ))}
               </ul>
             </div>
           ) : null}
 
           {/* Estimated total */}
-          <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-800">
-            <h3 className="mb-3 text-lg font-semibold">Your Estimated Total</h3>
+          <div className="border border-parchment-300 bg-parchment-100 p-6 sm:p-8 dark:bg-jungle-800">
+            <div className="mb-1 text-[11px] font-semibold tracking-[0.2em] text-accent uppercase">
+              Your Estimate
+            </div>
+            <h3 className="font-editorial mb-5 text-2xl text-foreground">What This Journey Costs</h3>
             <form className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <div className="flex-1">
                 <Label htmlFor="groupSize">Group size</Label>
@@ -273,37 +288,41 @@ export default async function TourPackagePage({
                 </Select>
               </div>
               <Button type="submit" variant="secondary">
-                Update estimate
+                Update Estimate
               </Button>
             </form>
 
-            <div className="mt-4 border-t border-zinc-200 pt-4 text-center dark:border-zinc-800">
+            <div className="mt-6 border-t border-parchment-200 pt-6 text-center">
               {estimate ? (
                 <>
-                  <p className="text-sm text-zinc-500">
+                  <p className="font-mono text-[11px] tracking-wider text-muted uppercase">
                     Estimated Total · {monthName(monthNumber ?? 0)}
                   </p>
-                  <p className="text-3xl font-semibold">{formatCurrency(estimate.pricePerPerson)} / person</p>
+                  <p className="font-editorial mt-1 text-4xl font-bold text-foreground">
+                    {formatCurrency(estimate.pricePerPerson)}
+                    <span className="text-lg font-normal text-muted"> / person</span>
+                  </p>
                 </>
               ) : groupSize || month ? (
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-muted">
                   Pricing isn&apos;t configured yet for that combination — select a different group size or
                   month, or send an enquiry and we&apos;ll quote you directly.
                 </p>
               ) : (
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-muted">
                   Select your group size and arrival month above to see your estimated total per person.
                 </p>
               )}
             </div>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               href={`/enquiry?${enquiryParams.toString()}`}
-              className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="inline-flex items-center gap-2 bg-foreground px-8 py-3.5 text-xs font-medium tracking-[0.16em] text-background uppercase transition-colors hover:bg-accent hover:text-accent-foreground"
             >
-              Request This Trip
+              <span>Request This Trip</span>
+              <span className="font-editorial text-sm">→</span>
             </Link>
           </div>
         </section>

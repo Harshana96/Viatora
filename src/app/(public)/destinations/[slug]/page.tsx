@@ -20,27 +20,32 @@ export default async function DestinationDetailPage({
   }
 
   return (
-    <main className="flex-1 px-6 py-12">
-      <div className="mx-auto flex max-w-5xl flex-col gap-10">
+    <main className="flex-1">
+      <div className="mx-auto max-w-5xl space-y-16 px-4 pt-8 pb-24 sm:px-6 sm:pt-14 lg:px-8">
         {destination.images.length > 0 ? (
-          <Image
-            src={destination.images[0].url}
-            alt={destination.images[0].alt ?? destination.name}
-            width={1200}
-            height={480}
-            className="h-64 w-full rounded-lg object-cover sm:h-80"
-            priority
-          />
+          <div className="relative h-72 w-full overflow-hidden bg-parchment-200 sm:h-96">
+            <Image
+              src={destination.images[0].url}
+              alt={destination.images[0].alt ?? destination.name}
+              width={1400}
+              height={600}
+              className="h-full w-full object-cover"
+              priority
+            />
+          </div>
         ) : null}
+
         <header>
-          <h1 className="text-3xl font-semibold tracking-tight">{destination.name}</h1>
-          <p className="mt-1 text-sm font-medium text-zinc-500">{destination.location}</p>
-          <p className="mt-4 max-w-2xl text-zinc-600 dark:text-zinc-400">{destination.description}</p>
+          <p className="text-[11px] tracking-[0.2em] text-ceylon-tea uppercase">{destination.location}</p>
+          <h1 className="font-editorial mt-2 text-4xl font-medium text-foreground sm:text-5xl">
+            {destination.name}
+          </h1>
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed font-light text-muted">{destination.description}</p>
         </header>
 
         {destination.images.length > 1 ? (
           <section>
-            <h2 className="mb-4 text-lg font-semibold">Gallery</h2>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Gallery</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {destination.images.slice(1).map((image) => (
                 <Image
@@ -49,7 +54,7 @@ export default async function DestinationDetailPage({
                   alt={image.alt ?? destination.name}
                   width={300}
                   height={200}
-                  className="h-32 w-full rounded-md object-cover"
+                  className="h-32 w-full object-cover"
                 />
               ))}
             </div>
@@ -58,18 +63,21 @@ export default async function DestinationDetailPage({
 
         {destination.thingsToDo.length > 0 ? (
           <section>
-            <h2 className="mb-2 text-lg font-semibold">Things to do</h2>
-            <ul className="list-disc pl-5 text-zinc-600 dark:text-zinc-400">
-              {destination.thingsToDo.map((item, index) => (
-                <li key={`${index}-${item}`}>{item}</li>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Things to Do</h2>
+            <div className="grid grid-cols-1 gap-2.5 text-sm text-foreground sm:grid-cols-2">
+              {destination.thingsToDo.map((item) => (
+                <div key={item} className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  <span>{item}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </section>
         ) : null}
 
         <section>
-          <h2 className="mb-4 text-lg font-semibold">Map</h2>
-          <div className="h-[320px] overflow-hidden rounded-lg">
+          <h2 className="font-editorial mb-4 text-2xl text-foreground">Map</h2>
+          <div className="h-[320px] overflow-hidden border border-parchment-300">
             <PlacesMap
               places={destination.places.map((place) => ({
                 id: place.id,
@@ -83,13 +91,13 @@ export default async function DestinationDetailPage({
 
         {destination.places.length > 0 ? (
           <section>
-            <h2 className="mb-4 text-lg font-semibold">Places to visit</h2>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Places to Visit</h2>
             <ul className="grid gap-4 sm:grid-cols-2">
               {destination.places.map((place) => (
-                <li key={place.id} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                  <p className="font-medium">{place.name}</p>
-                  <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">{place.category}</p>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{place.description}</p>
+                <li key={place.id} className="border border-parchment-300 bg-surface p-5">
+                  <p className="font-editorial text-lg font-semibold text-foreground">{place.name}</p>
+                  <p className="mt-1 font-mono text-[10px] tracking-wider text-muted uppercase">{place.category}</p>
+                  <p className="mt-2 text-sm leading-relaxed font-light text-muted">{place.description}</p>
                 </li>
               ))}
             </ul>
@@ -98,16 +106,20 @@ export default async function DestinationDetailPage({
 
         {destination.packages.length > 0 ? (
           <section>
-            <h2 className="mb-4 text-lg font-semibold">Related tour packages</h2>
+            <h2 className="font-editorial mb-4 text-2xl text-foreground">Related Journeys</h2>
             <ul className="grid gap-4 sm:grid-cols-2">
               {destination.packages.map((tourPackage) => (
                 <li key={tourPackage.id}>
                   <Link
                     href={`/tours/${tourPackage.slug}`}
-                    className="block rounded-lg border border-zinc-200 p-4 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+                    className="group block border border-parchment-300 bg-surface p-5 transition-all hover:border-foreground"
                   >
-                    <p className="text-sm text-zinc-500">{tourPackage.durationDays} days</p>
-                    <p className="mt-1 text-lg font-semibold">{tourPackage.name}</p>
+                    <p className="font-mono text-[10px] tracking-wider text-muted uppercase">
+                      {tourPackage.durationDays - 1} nights / {tourPackage.durationDays} days
+                    </p>
+                    <p className="font-editorial mt-1 text-xl font-semibold text-foreground transition-colors group-hover:text-accent">
+                      {tourPackage.name}
+                    </p>
                   </Link>
                 </li>
               ))}

@@ -40,65 +40,74 @@ export default async function ToursPage({ searchParams }: { searchParams: Promis
   );
 
   return (
-    <main className="flex-1 px-6 py-16">
-      <h1 className="text-2xl font-semibold">Tour Packages</h1>
-
-      <form className="mt-6 flex flex-wrap items-end gap-4">
-        <div>
-          <Label htmlFor="groupSize">Group size</Label>
-          <Select id="groupSize" name="groupSize" defaultValue={params.groupSize ?? ""}>
-            <option value="">Any group size</option>
-            {groupSizeRanges.map((range) => (
-              <option key={range.id} value={range.id}>
-                {range.label}
-              </option>
-            ))}
-          </Select>
+    <main className="flex-1">
+      <div className="mx-auto max-w-7xl px-4 pt-8 pb-24 sm:px-6 sm:pt-14 lg:px-8">
+        <div className="mb-10 border-b border-parchment-200 pb-4">
+          <div className="mb-1 text-[11px] font-semibold tracking-[0.2em] text-accent uppercase">
+            Handcrafted Itineraries
+          </div>
+          <h1 className="font-editorial text-4xl font-medium text-foreground sm:text-5xl">Curated Expeditions</h1>
         </div>
-        <div>
-          <Label htmlFor="month">Arrival month</Label>
-          <Select id="month" name="month" defaultValue={params.month ?? ""}>
-            <option value="">Any month</option>
-            {monthOptions.map((month) => (
-              <option key={month.value} value={month.value}>
-                {month.label}
-              </option>
+
+        <form className="mb-4 flex flex-wrap items-end gap-4 border border-parchment-300 bg-surface p-5">
+          <div className="min-w-[180px] flex-1">
+            <Label htmlFor="groupSize">Group size</Label>
+            <Select id="groupSize" name="groupSize" defaultValue={params.groupSize ?? ""}>
+              <option value="">Any group size</option>
+              {groupSizeRanges.map((range) => (
+                <option key={range.id} value={range.id}>
+                  {range.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="min-w-[180px] flex-1">
+            <Label htmlFor="month">Arrival month</Label>
+            <Select id="month" name="month" defaultValue={params.month ?? ""}>
+              <option value="">Any month</option>
+              {monthOptions.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <Button type="submit">Apply</Button>
+          {hasFilters ? (
+            <Link href="/tours" className="text-xs font-medium tracking-wider text-muted uppercase hover:text-foreground">
+              Clear
+            </Link>
+          ) : null}
+        </form>
+
+        {!canPrice ? (
+          <p className="mb-8 text-xs font-light text-muted">
+            Select a group size and arrival month above to see the estimated price for each journey.
+          </p>
+        ) : (
+          <div className="mb-8" />
+        )}
+
+        {packages.length === 0 ? (
+          <p className="text-muted">No tour packages available.</p>
+        ) : (
+          <ul className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {packagesWithPrice.map(({ tourPackage, pricePerPerson }) => (
+              <li key={tourPackage.id}>
+                <PackageCard
+                  slug={tourPackage.slug}
+                  name={tourPackage.name}
+                  durationDays={tourPackage.durationDays}
+                  destinationName={tourPackage.destination?.name}
+                  coverImageUrl={tourPackage.coverImageUrl}
+                  pricePerPerson={pricePerPerson}
+                  query={journeyQuery}
+                />
+              </li>
             ))}
-          </Select>
-        </div>
-        <Button type="submit">Apply</Button>
-        {hasFilters ? (
-          <Link href="/tours" className="text-sm font-medium text-zinc-500 hover:underline">
-            Clear
-          </Link>
-        ) : null}
-      </form>
-
-      {!canPrice ? (
-        <p className="mt-4 text-sm text-zinc-500">
-          Select a group size and arrival month above to see the estimated price for each journey.
-        </p>
-      ) : null}
-
-      {packages.length === 0 ? (
-        <p className="mt-8 text-zinc-600 dark:text-zinc-400">No tour packages available.</p>
-      ) : (
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {packagesWithPrice.map(({ tourPackage, pricePerPerson }) => (
-            <li key={tourPackage.id}>
-              <PackageCard
-                slug={tourPackage.slug}
-                name={tourPackage.name}
-                durationDays={tourPackage.durationDays}
-                destinationName={tourPackage.destination?.name}
-                coverImageUrl={tourPackage.coverImageUrl}
-                pricePerPerson={pricePerPerson}
-                query={journeyQuery}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+          </ul>
+        )}
+      </div>
     </main>
   );
 }
