@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { HeroBackgroundSlider } from "@/components/home/HeroBackgroundSlider";
 import { HeroJourneyCard } from "@/components/home/HeroJourneyCard";
 import { IslandCartography } from "@/components/home/IslandCartography";
 import { Stars } from "@/components/reviews/Stars";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { monthOptions } from "@/lib/months";
 import { listDestinations } from "@/server/destinations/actions";
@@ -43,6 +43,41 @@ const distinctions = [
 ];
 
 const featuredDestinationSlugs = ["sigiriya", "ella", "nuwara-eliya", "mirissa"];
+
+// Real editorial photography already uploaded to Cloudinary (see prisma/seed.ts's
+// seedPhotos) -- reused here as the hero background slideshow.
+const HERO_BACKGROUND_SLIDES = [
+  {
+    image: "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1920/v1790185175/viatora/y1iphqaonuvr7wdnbhf6.png",
+    index: "01",
+    title: "Sigiriya",
+    subtitle: "Ancient Rock Fortress & UNESCO Site",
+  },
+  {
+    image: "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1920/v1790185178/viatora/pqmwakdwvhl6g2ot5yk8.png",
+    index: "02",
+    title: "Ella",
+    subtitle: "Nine Arches Bridge & Highland Rail",
+  },
+  {
+    image: "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1920/v1790185181/viatora/ter0xqdv0mds5ql5p2lf.png",
+    index: "03",
+    title: "Nuwara Eliya",
+    subtitle: "Tea Country & Horton Plains",
+  },
+  {
+    image: "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1920/v1790185186/viatora/ya58jtyz2inzvunumwfb.png",
+    index: "04",
+    title: "Dambulla",
+    subtitle: "Cave Temple & Forest Sanctuary",
+  },
+  {
+    image: "https://res.cloudinary.com/xtp3v13m/image/upload/f_auto,q_auto,w_1920/v1790185183/viatora/pcpepbfir6fxo2iurevg.png",
+    index: "05",
+    title: "Mirissa",
+    subtitle: "Whale Watching & Palm-Lined Beaches",
+  },
+];
 
 // The MVP is explicitly three curated journeys -- pin the homepage to exactly these,
 // rather than "whatever happens to be published" (which could include e2e fixtures,
@@ -87,30 +122,34 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <div className="mx-auto max-w-7xl space-y-28 px-4 pt-8 pb-24 sm:space-y-36 sm:px-6 sm:pt-14 lg:px-8">
-        {/* Hero */}
-        <section className="relative">
+      {/* Hero -- full-bleed photo background, outside the constrained page container */}
+      <section className="relative overflow-hidden pb-14 sm:pb-16">
+        <HeroBackgroundSlider slides={HERO_BACKGROUND_SLIDES} />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
           <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-12 lg:gap-12">
             <div className="space-y-7 lg:col-span-7">
-              <div className="flex items-center gap-3 text-xs tracking-[0.2em] text-muted uppercase">
-                <span className="h-px w-7 bg-accent" />
+              <div className="flex items-center gap-3 text-xs tracking-[0.2em] text-white/80 uppercase">
+                <span className="h-px w-7 bg-ceylon-gold" />
                 <span>Curated Journeys, Planned Simply</span>
               </div>
 
-              <h1 className="font-editorial text-5xl leading-[1.03] font-light tracking-[-0.03em] text-foreground sm:text-6xl xl:text-7xl">
+              <h1 className="font-editorial text-5xl leading-[1.03] font-light tracking-[-0.03em] text-white sm:text-6xl xl:text-7xl">
                 Unscripted Ceylon. <br />
-                <span className="font-editorial font-normal text-ceylon-tea italic">Mist-veiled peaks</span> &amp;
+                <span className="font-editorial font-normal text-ceylon-gold italic">Mist-veiled peaks</span> &amp;
                 warm southern seas.
               </h1>
 
-              <p className="max-w-xl text-base leading-relaxed font-light text-muted sm:text-lg">
+              <p className="max-w-xl text-base leading-relaxed font-light text-white/80 sm:text-lg">
                 Three handcrafted routes through tea country, ancient citadels and the coast. Tell us your group
                 size and when you&apos;re arriving, and we&apos;ll build a proposal around your dates.
               </p>
 
-              <form action="/tours" className="flex flex-col gap-4 border-y border-border py-6 sm:flex-row sm:items-end">
+              <form action="/tours" className="flex flex-col gap-4 border-y border-white/20 py-6 sm:flex-row sm:items-end">
                 <div className="flex-1">
-                  <Label htmlFor="groupSize">Group size</Label>
+                  <label htmlFor="groupSize" className="mb-1 block text-[11px] font-semibold tracking-wider text-white/70 uppercase">
+                    Group size
+                  </label>
                   <Select id="groupSize" name="groupSize" defaultValue="">
                     <option value="">Any group size</option>
                     {groupSizeRanges.map((range) => (
@@ -121,7 +160,9 @@ export default async function HomePage() {
                   </Select>
                 </div>
                 <div className="flex-1">
-                  <Label htmlFor="month">Arrival month</Label>
+                  <label htmlFor="month" className="mb-1 block text-[11px] font-semibold tracking-wider text-white/70 uppercase">
+                    Arrival month
+                  </label>
                   <Select id="month" name="month" defaultValue="">
                     <option value="">Any month</option>
                     {monthOptions.map((month) => (
@@ -136,7 +177,7 @@ export default async function HomePage() {
                 </Button>
               </form>
 
-              <Link href="/destinations" className="font-editorial inline-block text-sm text-foreground italic hover:text-accent">
+              <Link href="/destinations" className="font-editorial inline-block text-sm text-white/90 italic hover:text-ceylon-gold">
                 View Island Waypoints →
               </Link>
             </div>
@@ -145,8 +186,10 @@ export default async function HomePage() {
               <HeroJourneyCard slides={heroSlides} />
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
+      <div className="mx-auto max-w-7xl space-y-28 px-4 pt-14 pb-24 sm:space-y-36 sm:px-6 sm:pt-20 lg:px-8">
         {/* Curated Expeditions */}
         {dominantTour ? (
           <section className="space-y-8" id="journeys">
