@@ -901,11 +901,11 @@ async function main() {
       },
       {
         dayNumber: 5,
-        title: "Pinnawala",
-        description: "Morning at the Pinnawala Elephant Orphanage before returning to Kandy for a relaxed evening.",
+        title: "Kandy to Pinnawala",
+        description: "Leisure time in Kandy before a visit to the Pinnawala Elephant Orphanage.",
         places: [
-          { placeId: pinnawalaOrphanage.id, activities: ["Pinnawala visit", "Elephant experience", "River or forest activities"] },
           { placeId: kandyLake.id, activities: ["Kandy leisure time"] },
+          { placeId: pinnawalaOrphanage.id, activities: ["Pinnawala visit", "Elephant experience", "River or forest activities"] },
         ],
       },
       {
