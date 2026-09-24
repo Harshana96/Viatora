@@ -7,7 +7,6 @@ import { Stars } from "@/components/reviews/Stars";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { formatCurrency } from "@/lib/utils";
 import { monthOptions } from "@/lib/months";
 import { listDestinations } from "@/server/destinations/actions";
 import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
@@ -24,10 +23,10 @@ const distinctions = [
       "Every route is itineraried in detail rather than pulled from a generic catalogue — chosen for pace, not padded with filler days.",
   },
   {
-    label: "02 / Pricing",
-    title: "One Number, Shown Up Front",
+    label: "02 / Process",
+    title: "Two Questions to Start",
     description:
-      "Your group size and arrival month decide the price before you ever speak to us — never a stack of add-on line items to negotiate later.",
+      "Tell us your group size and arrival month — we take it from there and come back with a tailored proposal.",
   },
   {
     label: "03 / Ground Team",
@@ -68,7 +67,6 @@ export default async function HomePage() {
     durationDays: tourPackage.durationDays,
     description: tourPackage.description,
     highlights: tourPackage.highlights,
-    startingPrice: tourPackage.startingPrice != null ? Number(tourPackage.startingPrice) : null,
   }));
 
   const dominantTour = packages.find((p) => p.slug === "sri-lanka-grand-journey") ?? packages[0];
@@ -107,7 +105,7 @@ export default async function HomePage() {
 
               <p className="max-w-xl text-base leading-relaxed font-light text-muted sm:text-lg">
                 Three handcrafted routes through tea country, ancient citadels and the coast. Tell us your group
-                size and when you&apos;re arriving — see one clear price before you talk to anyone.
+                size and when you&apos;re arriving, and we&apos;ll build a proposal around your dates.
               </p>
 
               <form action="/tours" className="flex flex-col gap-4 border-y border-border py-6 sm:flex-row sm:items-end">
@@ -204,18 +202,7 @@ export default async function HomePage() {
                   ) : null}
                 </div>
 
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-parchment-200 pt-5">
-                  <div>
-                    {dominantTour.startingPrice != null ? (
-                      <>
-                        <span className="block font-sans text-[10px] tracking-widest text-muted uppercase">From</span>
-                        <span className="font-editorial text-2xl font-bold text-foreground">
-                          {formatCurrency(Number(dominantTour.startingPrice))}
-                        </span>
-                        <span className="text-xs font-light text-muted"> / person</span>
-                      </>
-                    ) : null}
-                  </div>
+                <div className="mt-8 flex justify-end border-t border-parchment-200 pt-5">
                   <Link
                     href={`/tours/${dominantTour.slug}`}
                     className="inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-xs font-medium tracking-wider text-background uppercase transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -257,17 +244,7 @@ export default async function HomePage() {
                       </h4>
                       <p className="line-clamp-2 text-xs leading-relaxed font-light text-muted">{tour.description}</p>
                     </div>
-                    <div className="mt-4 flex items-center justify-between border-t border-parchment-200 pt-3 text-xs">
-                      <div>
-                        {tour.startingPrice != null ? (
-                          <>
-                            <span className="block text-[10px] text-muted uppercase">From</span>
-                            <span className="font-editorial text-xl font-bold text-foreground">
-                              {formatCurrency(Number(tour.startingPrice))}
-                            </span>
-                          </>
-                        ) : null}
-                      </div>
+                    <div className="mt-4 flex items-center justify-end border-t border-parchment-200 pt-3 text-xs">
                       <Link
                         href={`/tours/${tour.slug}`}
                         className="font-editorial flex items-center gap-1 text-foreground italic transition hover:text-accent"
@@ -318,8 +295,8 @@ export default async function HomePage() {
               <p className="text-sm leading-relaxed font-light text-muted">
                 Viatora exists because planning a trip to Sri Lanka usually means dozens of open tabs and quotes
                 from three agents that don&apos;t line up. We wanted a simpler starting point: a handful of
-                well-designed journeys, a route you can actually see, and one honest price before you ever have
-                to talk to anyone.
+                well-designed journeys, a route you can actually see, and a proposal built around your group and
+                your dates.
               </p>
             </div>
 
