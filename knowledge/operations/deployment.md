@@ -18,10 +18,22 @@
   production `DATABASE_URL` from a local machine (Neon is reachable from
   anywhere, no VPC restrictions) to create the schema, then ran
   `npm run create-admin -- <email> <password> [name]` against the same
-  `DATABASE_URL` to provision the first real admin login. For future
-  schema changes: run `prisma migrate deploy` against production
-  **before** merging the PR that depends on the new schema (Vercel's build
-  step does not run migrations automatically).
+  `DATABASE_URL` to provision the first real admin login.
+- `package.json`'s `build` script is `prisma migrate deploy && prisma
+  generate && next build`, so every Vercel build (production **and**
+  preview deployments) applies any pending migrations to whatever
+  `DATABASE_URL` is configured for that environment before building.
+  This was **not** the case initially — the build script was plain `next
+  build`, relying on someone remembering to run `prisma migrate deploy`
+  against production manually before merging. That step was missed
+  across several PRs, so the production database silently drifted out of
+  sync with the schema (missing columns/tables) until a build finally
+  failed trying to statically prerender a page whose data fetch hit the
+  missing column. Fixed by automating it instead of relying on memory.
+  Caveat: if preview deployments ever point at a different/staging
+  `DATABASE_URL` than production, this applies pending migrations there
+  automatically too, which is intended — just be aware an open PR's
+  migration lands on first build/preview, not at merge time.
 - Feature branches get Vercel preview deployments; merge to `main` only
   after review.
 
