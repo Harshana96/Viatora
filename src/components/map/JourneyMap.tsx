@@ -90,8 +90,8 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
           source: "journey-route",
           layout: { "line-join": "round", "line-cap": "round" },
           paint: isRoadRoute
-            ? { "line-color": "#0f172a", "line-width": 4 }
-            : { "line-color": "#0f172a", "line-width": 3, "line-dasharray": [0.5, 1.5] },
+            ? { "line-color": "#943815", "line-width": 4 }
+            : { "line-color": "#943815", "line-width": 3, "line-dasharray": [0.5, 1.5] },
         });
       }
 
@@ -100,7 +100,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
         el.type = "button";
         el.setAttribute("aria-label", `Day ${point.dayNumber}: ${point.label}`);
         el.className =
-          "flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-semibold text-white shadow-md transition-transform dark:bg-zinc-50 dark:text-zinc-900";
+          "flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-accent text-xs font-semibold text-accent-foreground shadow-md transition-transform";
         el.textContent = String(point.dayNumber);
         el.addEventListener("click", () => onSelectDay(point.dayId));
 
@@ -129,7 +129,7 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
       const el = marker.getElement();
       const isActive = dayId === selectedDayId;
       el.classList.toggle("ring-4", isActive);
-      el.classList.toggle("ring-amber-400", isActive);
+      el.classList.toggle("ring-ceylon-gold", isActive);
       el.style.transform = isActive ? "scale(1.15)" : "scale(1)";
     });
 
@@ -143,8 +143,8 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
 
   if (!MAPBOX_PUBLIC_TOKEN) {
     return (
-      <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900">
-        <p className="font-medium">Interactive map unavailable</p>
+      <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-2 border border-dashed border-parchment-300 bg-surface p-6 text-center text-sm text-muted">
+        <p className="font-medium text-foreground">Interactive map unavailable</p>
         <p>Set NEXT_PUBLIC_MAPBOX_TOKEN to enable the journey map.</p>
       </div>
     );
@@ -152,11 +152,11 @@ export function JourneyMap({ days, selectedDayId, onSelectDay, routeGeometry }: 
 
   if (points.length === 0) {
     return (
-      <div className="flex h-full min-h-[320px] items-center justify-center rounded-lg border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
+      <div className="flex h-full min-h-[320px] items-center justify-center border border-dashed border-parchment-300 p-6 text-center text-sm text-muted">
         No locations added to this itinerary yet.
       </div>
     );
   }
 
-  return <div ref={containerRef} className="h-full min-h-[320px] w-full rounded-lg" />;
+  return <div ref={containerRef} className="h-full min-h-[320px] w-full" />;
 }

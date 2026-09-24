@@ -38,27 +38,31 @@ export function JourneyExplorer({ days, route }: Props) {
               type="button"
               onClick={() => setSelectedDayId(day.id)}
               className={
-                "w-full rounded-lg border p-4 text-left transition-colors " +
+                "w-full border-l-4 border-t border-r border-b p-4 text-left transition-all duration-200 " +
                 (isActive
-                  ? "border-zinc-900 bg-zinc-50 dark:border-zinc-50 dark:bg-zinc-900"
-                  : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600")
+                  ? "border-t-parchment-300 border-r-parchment-300 border-b-parchment-300 border-l-foreground bg-surface shadow-sm"
+                  : "border-parchment-200 border-l-transparent bg-foreground/[0.02] hover:border-parchment-400")
               }
             >
-              <p className="text-sm font-semibold text-zinc-500">Day {day.dayNumber}</p>
-              {day.title ? <p className="text-lg font-semibold">{day.title}</p> : null}
+              <p className="font-mono text-[11px] font-semibold tracking-wider text-accent uppercase">
+                Day {String(day.dayNumber).padStart(2, "0")}
+              </p>
+              {day.title ? <p className="font-editorial mt-1 text-xl font-semibold text-foreground">{day.title}</p> : null}
               {day.description ? (
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{day.description}</p>
+                <p className="mt-1 text-sm leading-relaxed font-light text-muted">{day.description}</p>
               ) : null}
               {day.places.length > 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">{day.places.map((place) => place.name).join(", ")}</p>
+                <p className="mt-2 text-xs text-muted">{day.places.map((place) => place.name).join(", ")}</p>
               ) : null}
-              {day.hotelName ? <p className="mt-1 text-xs text-zinc-400">Stay: {day.hotelName}</p> : null}
+              {day.hotelName ? (
+                <p className="mt-1 font-mono text-[10px] text-muted">Stay: {day.hotelName}</p>
+              ) : null}
             </button>
           );
         })}
       </div>
-      <div className="order-1 flex flex-col gap-2 lg:order-2 lg:sticky lg:top-6">
-        <div className="h-[320px] overflow-hidden rounded-lg lg:h-[480px]">
+      <div className="order-1 flex flex-col gap-2 lg:order-2 lg:sticky lg:top-24">
+        <div className="h-[320px] overflow-hidden border border-parchment-300 lg:h-[480px]">
           <JourneyMap
             days={days}
             selectedDayId={selectedDayId}
@@ -67,11 +71,11 @@ export function JourneyExplorer({ days, route }: Props) {
           />
         </div>
         {route ? (
-          <p className="text-center text-xs text-zinc-500">
+          <p className="text-center font-mono text-[11px] tracking-wider text-muted uppercase">
             Road route: {Math.round(route.distanceKm)} km · ~{formatDuration(route.durationMinutes)} drive
           </p>
         ) : straightLineDistanceKm > 0 ? (
-          <p className="text-center text-xs text-zinc-500">
+          <p className="text-center font-mono text-[11px] tracking-wider text-muted uppercase">
             Approximate straight-line distance: {Math.round(straightLineDistanceKm)} km
           </p>
         ) : null}
