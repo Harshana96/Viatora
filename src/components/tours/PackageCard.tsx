@@ -1,17 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { formatCurrency } from "@/lib/utils";
+
 type Props = {
   slug: string;
   name: string;
   durationDays: number;
   destinationName?: string | null;
   coverImageUrl?: string | null;
-  /** Optional querystring (e.g. "groupSize=x&month=6") carried forward so the package page can prefill the enquiry form. */
+  /** Estimated total per person for the selected group size + arrival month. Omit/null to hide the price. */
+  pricePerPerson?: number | null;
+  /** Optional querystring (e.g. "groupSize=x&month=6") carried forward so the package page can price it immediately. */
   query?: string;
 };
 
-export function PackageCard({ slug, name, durationDays, destinationName, coverImageUrl, query }: Props) {
+export function PackageCard({
+  slug,
+  name,
+  durationDays,
+  destinationName,
+  coverImageUrl,
+  pricePerPerson,
+  query,
+}: Props) {
   return (
     <Link
       href={query ? `/tours/${slug}?${query}` : `/tours/${slug}`}
@@ -41,7 +53,18 @@ export function PackageCard({ slug, name, durationDays, destinationName, coverIm
         </h4>
       </div>
 
-      <div className="mt-4 flex items-center justify-end border-t border-parchment-200 pt-3 text-xs">
+      <div className="mt-4 flex items-center justify-between border-t border-parchment-200 pt-3 text-xs">
+        {pricePerPerson != null ? (
+          <div>
+            <span className="block text-[10px] text-muted uppercase">From</span>
+            <span className="font-editorial text-xl font-bold text-foreground">
+              {formatCurrency(pricePerPerson)}
+            </span>
+            <span className="text-[11px] text-muted"> / person</span>
+          </div>
+        ) : (
+          <span className="text-muted">Select group size for pricing</span>
+        )}
         <span className="font-editorial text-foreground italic transition-colors group-hover:text-accent">
           View route →
         </span>
