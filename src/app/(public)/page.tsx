@@ -122,11 +122,13 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      {/* Hero -- full-bleed photo background, outside the constrained page container */}
-      <section className="relative overflow-hidden pb-14 sm:pb-16">
+      {/* Hero -- full-bleed photo background, outside the constrained page container.
+          Pulled up under the sticky navbar's own row (-mt) so the photo shows through
+          there too, with matching extra top padding on the content so it doesn't move. */}
+      <section className="relative -mt-24 overflow-hidden pb-14 sm:pb-16">
         <HeroBackgroundSlider slides={HERO_BACKGROUND_SLIDES} />
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-44 sm:px-6 sm:pt-52 lg:px-8 lg:pt-56">
           <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-12 lg:gap-12">
             <div className="space-y-7 lg:col-span-7">
               <div className="flex items-center gap-3 text-xs tracking-[0.2em] text-white/80 uppercase">
