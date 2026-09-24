@@ -711,6 +711,243 @@ async function main() {
     ],
   );
 
+  // --- Cultural Triangle & Coastal Discovery: 8N/9D sample package ---
+
+  const habarana = await seedDestination({
+    name: "Habarana",
+    slug: "habarana",
+    description:
+      "A quiet village at the heart of the Cultural Triangle, used as a gateway to Sigiriya, Anuradhapura and Polonnaruwa, surrounded by forest and reservoirs.",
+    location: "North Central Province",
+    thingsToDo: ["Village tour by bullock cart", "Habarana Lake", "Elephant Back Safari"],
+    latitude: 8.0362,
+    longitude: 80.7539,
+  });
+
+  const anuradhapura = await seedDestination({
+    name: "Anuradhapura",
+    slug: "anuradhapura",
+    description:
+      "One of the ancient capitals of Sri Lanka and a UNESCO World Heritage Site, with well-preserved ruins of an ancient civilization, sacred temples and giant dagobas.",
+    location: "North Central Province",
+    thingsToDo: ["Sri Maha Bodhi tree", "Ruwanwelisaya dagoba", "Jetavanaramaya", "Mihintale climb"],
+    latitude: 8.3114,
+    longitude: 80.4037,
+  });
+
+  const polonnaruwaDestination = await seedDestination({
+    name: "Polonnaruwa",
+    slug: "polonnaruwa",
+    description:
+      "Sri Lanka's medieval capital, a UNESCO World Heritage Site with well-preserved ruins of royal palaces, temples and the Gal Vihara rock-cut Buddha statues.",
+    location: "North Central Province",
+    thingsToDo: ["Polonnaruwa ancient city tour", "Gal Vihara", "Cycling through the ruins"],
+    latitude: 7.9403,
+    longitude: 81.0188,
+  });
+
+  const pinnawalaDestination = await seedDestination({
+    name: "Pinnawala",
+    slug: "pinnawala",
+    description:
+      "Home to the Pinnawala Elephant Orphanage, established to care for orphaned and injured wild elephants, set beside the Maha Oya river.",
+    location: "Sabaragamuwa Province",
+    thingsToDo: ["Elephant feeding", "River bathing time", "Orphanage nursery visit"],
+    latitude: 7.301,
+    longitude: 80.3877,
+  });
+
+  const colombo = await seedDestination({
+    name: "Colombo",
+    slug: "colombo",
+    description:
+      "Sri Lanka's commercial capital, a coastal city blending colonial architecture, modern skyline and the departure point for most international travel.",
+    location: "Western Province",
+    thingsToDo: ["Galle Face Green", "Gangaramaya Temple", "Pettah markets", "Independence Square"],
+    latitude: 6.9271,
+    longitude: 79.8612,
+  });
+
+  const habaranaVillage = await seedPlace({
+    name: "Habarana Village",
+    slug: "habarana-village",
+    description: "A rural village near Habarana known for traditional bullock cart tours and local life experiences.",
+    category: "ADVENTURE",
+    latitude: 8.0362,
+    longitude: 80.7539,
+    destinationId: habarana.id,
+  });
+
+  const anuradhapuraAncientCity = await seedPlace({
+    name: "Anuradhapura Ancient City",
+    slug: "anuradhapura-ancient-city",
+    description: "The sacred ruined city of Sri Lanka's first kingdom, home to ancient dagobas, monasteries and the Sri Maha Bodhi tree.",
+    category: "HISTORICAL_SITE",
+    latitude: 8.3114,
+    longitude: 80.4037,
+    destinationId: anuradhapura.id,
+  });
+
+  const mihintale = await seedPlace({
+    name: "Mihintale",
+    slug: "mihintale",
+    description: "A sacred mountain considered the cradle of Buddhism in Sri Lanka, with a long stairway leading to ancient stupas and shrines.",
+    category: "TEMPLE",
+    latitude: 8.3489,
+    longitude: 80.5093,
+    destinationId: anuradhapura.id,
+  });
+
+  const polonnaruwaAncientCity = await seedPlace({
+    name: "Polonnaruwa Ancient City",
+    slug: "polonnaruwa-ancient-city",
+    description: "The ruins of Sri Lanka's medieval capital, including royal palaces, temples and the Gal Vihara rock sculptures.",
+    category: "HISTORICAL_SITE",
+    latitude: 7.9403,
+    longitude: 81.0188,
+    destinationId: polonnaruwaDestination.id,
+  });
+
+  const pinnawalaOrphanage = await seedPlace({
+    name: "Pinnawala Elephant Orphanage",
+    slug: "pinnawala-elephant-orphanage",
+    description: "A sanctuary and nursery for orphaned and injured wild elephants, with daily feeding and river bathing sessions.",
+    category: "WILDLIFE",
+    latitude: 7.301,
+    longitude: 80.3877,
+    destinationId: pinnawalaDestination.id,
+  });
+
+  const colomboCity = await seedPlace({
+    name: "Colombo City",
+    slug: "colombo-city",
+    description: "The commercial heart of Sri Lanka, with colonial-era landmarks, waterfront promenades and city markets.",
+    category: "HISTORICAL_SITE",
+    latitude: 6.9271,
+    longitude: 79.8612,
+    destinationId: colombo.id,
+  });
+
+  const bandaranaikeAirport = await seedPlace({
+    name: "Bandaranaike International Airport",
+    slug: "bandaranaike-international-airport",
+    description: "Sri Lanka's main international airport, located in Katunayake north of Colombo.",
+    category: "ADVENTURE",
+    latitude: 7.1808,
+    longitude: 79.8841,
+    destinationId: colombo.id,
+  });
+
+  const culturalCoastalDiscovery = await seedPackage(
+    {
+      name: "Cultural Triangle & Coastal Discovery",
+      slug: "cultural-triangle-coastal-discovery",
+      coverImageUrl: seedPhotos.dambullaCaveTemple.url,
+      coverImagePublicId: seedPhotos.dambullaCaveTemple.publicId,
+      durationDays: 9,
+      startingPrice: 780,
+      travelType: "CULTURAL",
+      description:
+        "An eight-night journey through Sri Lanka's ancient cities and wildlife, from the ruined capitals of Anuradhapura and Polonnaruwa to Sigiriya Rock, Pinnawala's elephants, Kandy, tea country and the south coast.",
+      highlights: [
+        "Ancient cities of Anuradhapura and Polonnaruwa",
+        "Sigiriya Rock Fortress and Dambulla Cave Temple",
+        "Pinnawala Elephant Orphanage",
+        "Temple of the Sacred Tooth Relic in Kandy",
+        "Tea country in Nuwara Eliya",
+        "Galle Fort and Colombo city",
+      ],
+      included: commonIncluded,
+      excluded: commonExcluded,
+      importantInfo: commonImportantInfo,
+      published: true,
+    },
+    [
+      {
+        dayNumber: 1,
+        title: "Arrival",
+        description: "Arrival transfer through Habarana to Sigiriya, with a village experience en route.",
+        places: [
+          { placeId: habaranaVillage.id, activities: ["Airport pickup", "Habarana village experience"] },
+          { placeId: sigiriyaRock.id, activities: ["Sigiriya sunset", "Hotel check-in"] },
+        ],
+      },
+      {
+        dayNumber: 2,
+        title: "Anuradhapura and Mihintale",
+        description: "A full day exploring the sacred ancient city of Anuradhapura and the hilltop site of Mihintale.",
+        places: [
+          { placeId: anuradhapuraAncientCity.id, activities: ["Anuradhapura ancient city tour", "Temple visits"] },
+          { placeId: mihintale.id, activities: ["Mihintale visit", "Cultural experiences"] },
+        ],
+      },
+      {
+        dayNumber: 3,
+        title: "Sigiriya Rock and Polonnaruwa",
+        description: "Climb Sigiriya Rock in the morning, then explore the medieval ruins of Polonnaruwa.",
+        places: [
+          { placeId: sigiriyaRock.id, activities: ["Sigiriya Rock visit"] },
+          { placeId: polonnaruwaAncientCity.id, activities: ["Polonnaruwa ancient city tour", "Cycling", "Photography"] },
+        ],
+      },
+      {
+        dayNumber: 4,
+        title: "Dambulla and Kandy",
+        description: "Visit the Dambulla Cave Temple en route to Kandy, with an evening cultural show.",
+        places: [
+          { placeId: dambullaCaveTemple.id, activities: ["Dambulla Cave Temple"] },
+          { placeId: templeOfTooth.id, activities: ["Kandy city tour", "Temple of the Tooth", "Cultural show"] },
+        ],
+      },
+      {
+        dayNumber: 5,
+        title: "Pinnawala",
+        description: "Morning at the Pinnawala Elephant Orphanage before returning to Kandy for a relaxed evening.",
+        places: [
+          { placeId: pinnawalaOrphanage.id, activities: ["Pinnawala visit", "Elephant experience", "River or forest activities"] },
+          { placeId: kandyLake.id, activities: ["Kandy leisure time"] },
+        ],
+      },
+      {
+        dayNumber: 6,
+        title: "Travel to Nuwara Eliya",
+        description: "Scenic train journey and tea country tour on the way to Nuwara Eliya.",
+        places: [
+          { placeId: hanthanaTea.id, activities: ["Scenic train journey"] },
+          { placeId: pedroTeaEstate.id, activities: ["Tea factory visit", "Tea plantation walk", "Nuwara Eliya city tour"] },
+        ],
+      },
+      {
+        dayNumber: 7,
+        title: "Travel to Galle",
+        description: "Scenic drive from the hill country down to the south coast, arriving at Galle Fort by evening.",
+        places: [
+          { placeId: hortonPlains.id, activities: ["Scenic drive"] },
+          { placeId: galleFort.id, activities: ["Galle Fort visit", "Beach activities", "Sunset experience"] },
+        ],
+      },
+      {
+        dayNumber: 8,
+        title: "Yala, Galle and Colombo",
+        description: "A wildlife safari, coastal sightseeing and an evening arrival in Colombo.",
+        places: [
+          { placeId: yalaPark.id, activities: ["Yala safari", "Wildlife experience"] },
+          { placeId: galleFort.id, activities: ["Galle Fort visit", "Coastal drive"] },
+          { placeId: colomboCity.id, activities: ["Colombo evening experience"] },
+        ],
+      },
+      {
+        dayNumber: 9,
+        title: "Departure",
+        description: "A final morning in Colombo before transferring to the airport for departure.",
+        places: [
+          { placeId: colomboCity.id, activities: ["Colombo city tour", "Shopping"] },
+          { placeId: bandaranaikeAirport.id, activities: ["Airport transfer", "Departure"] },
+        ],
+      },
+    ],
+  );
+
   const groupMultiplier: Record<string, number> = {
     [twoTravelers.id]: 1.15,
     [twoToFive.id]: 1.0,
@@ -723,7 +960,7 @@ async function main() {
     [lowSeason.id]: 0.9,
   };
 
-  for (const tourPackage of [grandJourney, explorer, highlights]) {
+  for (const tourPackage of [grandJourney, explorer, highlights, culturalCoastalDiscovery]) {
     for (const groupSizeRange of [twoTravelers, twoToFive, fiveToTen, tenToTwenty]) {
       for (const season of [peakSeason, shoulderSeason, lowSeason]) {
         const base = Number(tourPackage.startingPrice);
