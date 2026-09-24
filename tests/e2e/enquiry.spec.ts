@@ -20,7 +20,7 @@ test.describe("enquiry submission", () => {
 
   test("enquiry form pre-selects the package from the URL", async ({ page }) => {
     await page.goto(`/tours/${E2E_PACKAGE_SLUG}`);
-    await page.getByRole("button", { name: "Request This Trip" }).click();
+    await page.getByRole("link", { name: "Request This Trip" }).click();
 
     await expect(page).toHaveURL(/\/enquiry\?package=/);
     await expect(page.getByLabel("Journey")).toHaveValue(/.+/);
