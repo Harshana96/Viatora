@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { JourneyExplorer } from "@/components/itinerary/JourneyExplorer";
@@ -9,10 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { listHotelsByIds } from "@/server/hotels/actions";
 import { fetchDrivingRoute } from "@/lib/mapbox";
-import { formatCurrency } from "@/lib/utils";
-import { monthName, monthOptions } from "@/lib/months";
+import { monthOptions } from "@/lib/months";
 import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
-import { getEstimatedTotal } from "@/server/pricing/engine";
 import { getPackageBySlug } from "@/server/tours/actions";
 import type { JourneyDay } from "@/types";
 
@@ -34,12 +31,6 @@ export default async function TourPackagePage({
   }
 
   const groupSizeRanges = await listGroupSizeRanges();
-
-  const monthNumber = month ? Number(month) : undefined;
-  const estimate =
-    groupSize && monthNumber
-      ? await getEstimatedTotal({ packageId: tourPackage.id, groupSizeRangeId: groupSize, month: monthNumber })
-      : null;
 
   const hotelIds = Array.from(
     new Set(
@@ -78,11 +69,6 @@ export default async function TourPackagePage({
   );
   const includedActivities = Array.from(new Set(tourPackage.days.flatMap((day) => day.places.flatMap((p) => p.activities))));
   const optionalActivities = Array.from(new Set(tourPackage.days.flatMap((day) => day.optionalActivities)));
-
-  const enquiryParams = new URLSearchParams({ package: tourPackage.id });
-  if (groupSize) enquiryParams.set("groupSize", groupSize);
-  if (month) enquiryParams.set("month", month);
-  if (estimate) enquiryParams.set("estimatedTotal", String(estimate.pricePerPerson));
 
   return (
     <main className="flex-1">
@@ -258,13 +244,14 @@ export default async function TourPackagePage({
             </div>
           ) : null}
 
-          {/* Estimated total */}
+          {/* Plan this trip */}
           <div className="border border-parchment-300 bg-parchment-100 p-6 sm:p-8 dark:bg-jungle-800">
             <div className="mb-1 text-[11px] font-semibold tracking-[0.2em] text-accent uppercase">
-              Your Estimate
+              Plan This Journey
             </div>
-            <h3 className="font-editorial mb-5 text-2xl text-foreground">What This Journey Costs</h3>
-            <form className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <h3 className="font-editorial mb-5 text-2xl text-foreground">Tell Us Your Group and Dates</h3>
+            <form action="/enquiry" className="flex flex-col gap-4 sm:flex-row sm:items-end">
+              <input type="hidden" name="package" value={tourPackage.id} />
               <div className="flex-1">
                 <Label htmlFor="groupSize">Group size</Label>
                 <Select id="groupSize" name="groupSize" defaultValue={groupSize ?? ""}>
@@ -287,43 +274,10 @@ export default async function TourPackagePage({
                   ))}
                 </Select>
               </div>
-              <Button type="submit" variant="secondary">
-                Update Estimate
+              <Button type="submit" variant="accent">
+                Request This Trip
               </Button>
             </form>
-
-            <div className="mt-6 border-t border-parchment-200 pt-6 text-center">
-              {estimate ? (
-                <>
-                  <p className="font-mono text-[11px] tracking-wider text-muted uppercase">
-                    Estimated Total · {monthName(monthNumber ?? 0)}
-                  </p>
-                  <p className="font-editorial mt-1 text-4xl font-bold text-foreground">
-                    {formatCurrency(estimate.pricePerPerson)}
-                    <span className="text-lg font-normal text-muted"> / person</span>
-                  </p>
-                </>
-              ) : groupSize || month ? (
-                <p className="text-sm text-muted">
-                  Pricing isn&apos;t configured yet for that combination — select a different group size or
-                  month, or send an enquiry and we&apos;ll quote you directly.
-                </p>
-              ) : (
-                <p className="text-sm text-muted">
-                  Select your group size and arrival month above to see your estimated total per person.
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <Link
-              href={`/enquiry?${enquiryParams.toString()}`}
-              className="inline-flex items-center gap-2 bg-foreground px-8 py-3.5 text-xs font-medium tracking-[0.16em] text-background uppercase transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              <span>Request This Trip</span>
-              <span className="font-editorial text-sm">→</span>
-            </Link>
           </div>
         </section>
 

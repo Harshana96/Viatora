@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { monthOptions } from "@/lib/months";
-import { formatCurrency } from "@/lib/utils";
 import { createEnquiry } from "@/server/enquiries/actions";
 import { listGroupSizeRanges } from "@/server/group-size-ranges/actions";
 import { listPublishedPackages } from "@/server/tours/actions";
@@ -18,7 +17,6 @@ export default async function EnquiryPage({
     package?: string;
     groupSize?: string;
     month?: string;
-    estimatedTotal?: string;
     success?: string;
   }>;
 }) {
@@ -26,7 +24,6 @@ export default async function EnquiryPage({
     package: preselectedPackageId,
     groupSize: preselectedGroupSize,
     month: preselectedMonth,
-    estimatedTotal,
     success,
   } = await searchParams;
   const [packages, groupSizeRanges] = await Promise.all([listPublishedPackages(), listGroupSizeRanges()]);
@@ -59,17 +56,7 @@ export default async function EnquiryPage({
           required.
         </p>
 
-        {estimatedTotal ? (
-          <div className="mt-6 border border-parchment-300 bg-parchment-100 p-4 text-center text-sm dark:bg-jungle-800">
-            Estimated Total:{" "}
-            <span className="font-editorial text-lg font-semibold text-foreground">
-              {formatCurrency(Number(estimatedTotal))} / person
-            </span>
-          </div>
-        ) : null}
-
         <form action={createEnquiry} className="mt-8 flex flex-col gap-5 border border-parchment-300 bg-surface p-6 sm:p-10">
-          {estimatedTotal ? <input type="hidden" name="estimatedTotal" value={estimatedTotal} /> : null}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
               <Label htmlFor="name">

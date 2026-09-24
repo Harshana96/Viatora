@@ -2,15 +2,12 @@
 
 import { useState } from "react";
 
-import { formatCurrency } from "@/lib/utils";
-
 type Slide = {
   slug: string;
   name: string;
   durationDays: number;
   description: string;
   highlights: string[];
-  startingPrice: number | null;
 };
 
 export function HeroJourneyCard({ slides }: { slides: Slide[] }) {
@@ -79,11 +76,6 @@ export function HeroJourneyCard({ slides }: { slides: Slide[] }) {
                 <span className="font-editorial text-sm">→</span>
               </button>
             </div>
-          ) : null}
-          {active.startingPrice != null ? (
-            <span className="pl-1 font-mono text-xs tracking-wider text-muted">
-              from {formatCurrency(active.startingPrice)}
-            </span>
           ) : null}
         </div>
 
