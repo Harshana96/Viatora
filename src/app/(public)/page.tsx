@@ -83,6 +83,8 @@ export default async function HomePage() {
       location: destination.location,
       description: destination.description,
       highlight: destination.thingsToDo[0] ?? null,
+      latitude: destination.latitude,
+      longitude: destination.longitude,
     }));
 
   return (
@@ -294,8 +296,8 @@ export default async function HomePage() {
                 </h2>
               </div>
               <p className="max-w-sm text-xs leading-relaxed font-light text-muted">
-                An illustrative overview of the regions our journeys pass through — each itinerary page has the
-                real, day-by-day route map.
+                Select a waypoint to see it on the map — each itinerary page also has the real, day-by-day
+                route map for that journey.
               </p>
             </div>
             <IslandCartography waypoints={waypoints} />
