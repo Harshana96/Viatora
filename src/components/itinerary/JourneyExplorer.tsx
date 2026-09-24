@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import { JourneyMap } from "@/components/map/JourneyMap";
@@ -47,8 +47,9 @@ export function JourneyExplorer({ days, route }: Props) {
         {days.map((day) => {
           const isActive = day.id === selectedDayId;
           const isExpanded = expandedDayIds.has(day.id);
-          const placesWithActivities = day.places.filter((place) => place.activities.length > 0);
-          const hasExpandableContent = placesWithActivities.length > 0;
+          const activities = day.places.flatMap((place) => place.activities);
+          const hasExpandableContent = activities.length > 0;
+          const routeLabel = day.places.map((place) => place.name).join("  →  ");
 
           return (
             <div
@@ -60,21 +61,36 @@ export function JourneyExplorer({ days, route }: Props) {
                   : "border-parchment-200 border-l-transparent bg-foreground/[0.02] hover:border-parchment-400")
               }
             >
-              <button type="button" onClick={() => setSelectedDayId(day.id)} className="w-full p-4 text-left">
-                <p className="font-mono text-[11px] font-semibold tracking-wider text-accent uppercase">
-                  Day {String(day.dayNumber).padStart(2, "0")}
-                </p>
-                {day.title ? (
-                  <p className="font-editorial mt-1 text-xl font-semibold text-foreground">{day.title}</p>
+              <button type="button" onClick={() => setSelectedDayId(day.id)} className="w-full p-5 text-left">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="bg-foreground px-2.5 py-1 font-mono text-[10px] font-semibold tracking-wider text-background uppercase">
+                    Day {String(day.dayNumber).padStart(2, "0")}
+                  </span>
+                  {day.title ? (
+                    <span className="border border-parchment-300 px-2.5 py-1 text-[10px] tracking-wider text-ceylon-tea uppercase">
+                      {day.title}
+                    </span>
+                  ) : null}
+                </div>
+
+                {routeLabel ? (
+                  <p className="font-editorial mt-3 text-2xl leading-snug font-medium text-foreground">
+                    {day.places.map((place, index) => (
+                      <span key={place.id}>
+                        {index > 0 ? <span className="mx-2 text-accent">→</span> : null}
+                        {place.name}
+                      </span>
+                    ))}
+                  </p>
                 ) : null}
+
                 {day.description ? (
-                  <p className="mt-1 text-sm leading-relaxed font-light text-muted">{day.description}</p>
-                ) : null}
-                {day.places.length > 0 ? (
-                  <p className="mt-2 text-xs text-muted">{day.places.map((place) => place.name).join(" → ")}</p>
+                  <p className="mt-2 text-sm leading-relaxed font-light text-muted">{day.description}</p>
                 ) : null}
                 {day.hotelName ? (
-                  <p className="mt-1 font-mono text-[10px] text-muted">Stay: {day.hotelName}</p>
+                  <p className="mt-3 font-mono text-[10px] tracking-wider text-muted uppercase">
+                    Stay: <span className="text-foreground normal-case">{day.hotelName}</span>
+                  </p>
                 ) : null}
               </button>
 
@@ -87,25 +103,30 @@ export function JourneyExplorer({ days, route }: Props) {
                       toggleExpanded(day.id);
                     }}
                     aria-expanded={isExpanded}
-                    className="flex w-full items-center justify-center gap-1.5 border-t border-parchment-200 py-2 text-[11px] font-medium tracking-wider text-muted uppercase hover:text-foreground"
+                    className="flex w-full items-center justify-center gap-1.5 border-t border-parchment-200 py-2.5 text-[11px] font-medium tracking-wider text-muted uppercase hover:text-foreground"
                   >
-                    {isExpanded ? "Hide activities" : "View activities"}
+                    {isExpanded ? "Hide leisure activities" : "View leisure activities"}
                     <ChevronDown size={13} className={`transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                   </button>
                   {isExpanded ? (
-                    <div className="flex flex-col gap-3 border-t border-parchment-200 bg-foreground/[0.015] px-4 py-3">
-                      {placesWithActivities.map((place) => (
-                        <div key={place.id}>
-                          <p className="text-[11px] font-semibold text-foreground uppercase">{place.name}</p>
-                          <ul className="mt-1 flex flex-col gap-1">
-                            {place.activities.map((activity) => (
-                              <li key={activity} className="text-sm text-muted">
-                                · {activity}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                    <div className="border-t border-parchment-200 bg-foreground/[0.015] px-5 py-4">
+                      <div className="mb-2.5 flex items-center justify-between">
+                        <p className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-accent uppercase">
+                          <Sparkles size={13} />
+                          Leisure &amp; Curated Activities
+                        </p>
+                        <p className="text-[11px] text-muted">
+                          {activities.length} included experience{activities.length === 1 ? "" : "s"}
+                        </p>
+                      </div>
+                      <ul className="flex flex-col gap-1.5">
+                        {activities.map((activity) => (
+                          <li key={activity} className="flex items-start gap-2 text-sm text-foreground">
+                            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                            {activity}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   ) : null}
                 </>
