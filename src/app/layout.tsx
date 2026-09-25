@@ -49,7 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Runs before paint to apply a saved theme choice and avoid a flash of the wrong theme. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
